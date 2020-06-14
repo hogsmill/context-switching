@@ -1,35 +1,82 @@
 <template>
   <div id="app" class="mb-4">
-    <h1>Context Switching</h1>
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <h2>No Context Switching</h2>
-          <h3>{{getTime(noSwitching)}}</h3>
-          <h3>Think of things that are: </h3>
-          <div class="row">
-            <div v-for="(topic, topicIndex) in noSwitching.topics" :key="topicIndex" class="col">
-              <h4>{{topic.topic}}</h4>
-              <input type="text" v-model="noSwitching.topics[topicIndex].newValue" class="form-control" v-on:keyup.enter="enter(noSwitching, topicIndex)"/>
-              <div v-for="(item, itemIndex) in topic.items" :key="itemIndex">
-                {{item}}
+    <nav class="navbar navbar-expand-lg navbar-light mb-4">
+      <a class="navbar-brand" href="http://agilesimulations.co.uk">
+        <img src="/lego.png" class="ml-4" height="38px" />
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item" :class="{ active: !showAbout }">
+            <a class="nav-link pointer" @click="showAbout = false"
+              >Simulation</a
+            >
+          </li>
+          <li class="nav-item" :class="{ active: showAbout }">
+            <a class="nav-link pointer" @click="showAbout = true">About</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div v-if="showAbout">
+      <AboutView />
+    </div>
+    <div v-if="!showAbout">
+      <h1>Context Switching</h1>
+      <div class="container">
+        <div class="row">
+
+          <div class="col no-switching">
+            <h2>No Context Switching</h2>
+            <h3>{{getTime(contexts.noSwitching)}} <button class="btn btn-info" @click="goNoSwitch($event)">Go</button></h3>
+            <h4>{{countItems(contexts.noSwitching)}} Items</h4>
+            <h3>Think of things that are: </h3>
+            <div class="row">
+              <div v-for="(topic, topicIndex) in contexts.noSwitching.topics" :key="topicIndex"
+                class="col no-switch"
+                :class="{active : topic.active}">
+                <h4>{{topic.topic}}</h4>
+                <input type="text" disabled="true"
+                  v-model="contexts.noSwitching.topics[topicIndex].newValue"
+                  class="form-control no-switching-input"
+                  v-on:keyup.enter="enter(contexts.noSwitching, topicIndex)"/>
+                <div v-for="(item, itemIndex) in topic.items" :key="itemIndex">
+                  {{item}}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="col">
-          <h2>Context Switching</h2>
-          <h3>{{getTime(switching)}}</h3>
-          <h3>Think of things that are: </h3>
-          <div class="row">
-            <div v-for="(topic, topicIndex) in switching.topics" :key="topicIndex" class="col">
-              <h4>{{topic.topic}}</h4>
-              <input type="text" v-model="switching.topics[topicIndex].newValue" class="form-control" v-on:keyup.enter="enter(switching, topicIndex)"/>
-              <div v-for="(item, itemIndex) in topic.items" :key="itemIndex">
-                {{item}}
+
+          <div class="col switching">
+            <h2>Context Switching</h2>
+            <h3>{{getTime(contexts.switching)}} <button class="btn btn-info" @click="goSwitch($event)">Go</button></h3>
+            <h4>{{countItems(contexts.switching)}} Items</h4>
+            <h3>Think of things that are: </h3>
+            <div class="row">
+              <div v-for="(topic, topicIndex) in contexts.switching.topics" :key="topicIndex" class="col rounded switch">
+                <h4>{{topic.topic}}</h4>
+                <input type="text" disabled="true"
+                  v-model="contexts.switching.topics[topicIndex].newValue"
+                  class="form-control switching-input"
+                  v-on:keyup.enter="enter(contexts.switching, topicIndex)"/>
+                <div v-for="(item, itemIndex) in topic.items" :key="itemIndex">
+                  {{item}}
+                </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -39,28 +86,45 @@
 <script>
 import io from "socket.io-client";
 
+import AboutView from "./components/about/AboutView.vue";
+
 export default {
   name: 'App',
-  components: {},
+  components: {
+    AboutView
+  },
   data() {
     return {
+      showAbout: false,
       host: false,
-      noSwitching: {
-        time: 0,
-        topics: [
-          {topic: "Red", items: [1, 2,3 ]},
-          {topic: "Large", items: [4, 5, 6]},
-          {topic: "Cold", items: [7, 8, 9]}
-        ]
-      },
-      switching: {
-        time: 0,
-        topics: [
-          {topic: "Red", items: [3, 2, 1]},
-          {topic: "Large", items: [4, 5, 6]},
-          {topic: "Cold", items: [7, 8, 9]}
-        ]
-      },
+      topics: 3,
+      timePerTopic: 20,
+      topicsList: [
+        "Red", "Alive", "Square",
+        "Dead", "Insect", "Cold"
+      ],
+      contexts: {
+        noSwitching: {
+          time: 0,
+          switching: false,
+          inputs: 'no-switching-input',
+          topics: [
+            {topic: "", active: false, items: []},
+            {topic: "", active: false, items: []},
+            {topic: "", active: false, items: []}
+          ]
+        },
+        switching: {
+          switching: true,
+          time: 0,
+          inputs: 'switching-input',
+          topics: [
+            {topic: "", active: false, items: []},
+            {topic: "", active: false, items: []},
+            {topic: "", active: false, items: []}
+          ]
+        }
+      }
     }
   },
   methods: {
@@ -74,7 +138,107 @@ export default {
     enter: function(context, topic) {
       context.topics[topic].items.push(context.topics[topic].newValue)
       context.topics[topic].newValue = ''
+      this.socket.emit("contexts", this.contexts)
+      if (context.switching) {
+        topic = topic == 2 ? 0 : topic + 1
+        document.getElementsByClassName('switching-input')[topic].focus()
+      }
+    },
+    countItems: function(context) {
+      var n = 0
+      for (var i = 0; i < context.topics.length; i++) {
+        n += context.topics[i].items.length
+      }
+      return n
+    },
+    getTopics: function(context) {
+      var topics = []
+      var l = this.topicsList.length
+      while (topics.length < 3) {
+        var rand = Math.floor(Math.random() * l)
+        var topic = this.topicsList[rand]
+        var dupe = false
+        for (var j = 0; j < topics.length; j++) {
+          if (topic == topics[j]) {
+            dupe = true
+          }
+        }
+        if (!dupe) {
+          topics.push(topic)
+        }
+      }
+      for (var i = 0; i < this.topics; i++) {
+        context.topics[i].topic = topics[i]
+      }
+    },
+    storeGo: function(context, button) {
+      context.goButton = button
+    },
+    start: function(context) {
+      context.time = 0
+      var inputs = document.getElementsByClassName(context.inputs)
+      for (var i = 0; i < inputs.length; i++) {
+        inputs[i].disabled = false
+      }
+      context.goButton.disabled = true
+    },
+    stop: function(context) {
+      var inputs = document.getElementsByClassName(context.inputs)
+      for (var i = 0; i < inputs.length; i++) {
+        inputs[i].disabled = true
+      }
+      context.goButton.disabled = false
+      context.time = 0
+    },
+
+    // No Switching
+
+    goNoSwitch: function(event) {
+      var context = this.contexts.noSwitching
+      this.storeGo(context, event.target)
+      this.start(context)
+      this.getTopics(context)
+      this.socket.emit("noSwitchTick")
+    },
+    _goNoSwitch: function() {
+      var context = this.contexts.noSwitching
+      var rem = context.time % this.timePerTopic
+      if (rem == 0) {
+        for (var i = 0; i < this.topics; i++) {
+          context.topics[i].active = false
+        }
+        var col = context.time / this.timePerTopic
+        context.topics[col].active = true
+        document.getElementsByClassName('no-switching-input')[col].focus()
+      }
+      context.time = context.time + 1
+      if (context.time < 60) {
+        this.socket.emit("noSwitchTick")
+      } else {
+        this.stop(context)
+      }
+    },
+
+    // Switching
+
+    goSwitch: function(event) {
+      var context = this.contexts.switching
+      this.storeGo(context, event.target)
+      this.start(context)
+      this.getTopics(context)
+      document.getElementsByClassName('switching-input')[0].focus()
+      this.socket.emit("switchTick")
+    },
+    _goSwitch: function() {
+      var context = this.contexts.switching
+      context.time = context.time + 1
+      if (context.time < 60) {
+        this.socket.emit("switchTick")
+      } else {
+        this.stop(context)
+      }
     }
+
   },
   created() {
     var host = "77.68.122.69"
@@ -89,6 +253,21 @@ export default {
     if (location.search == "?host") {
       this.host = true
     }
+    this.socket.on("contexts", (data) => {
+      this.contexts = data
+    })
+    this.socket.on("noSwitchTick", () => {
+      setTimeout(this._goNoSwitch, 1000)
+    })
+    this.socket.on("switchTick", () => {
+      setTimeout(this._goSwitch, 1000)
+    })
   }
 }
 </script>
+
+<style>
+.active {
+  background-color: yellow;
+}
+</style>

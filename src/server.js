@@ -32,7 +32,11 @@ io.on("connection", (socket) => {
     connectDebugOff || console.log(`User with socket id ${socket.id} has disconnected. (${connections} connections)`)
   })
 
-  socket.on("test", (data) => { emit("test", data) })
+  socket.on("contexts", (data) => { emit("contexts", data) })
+
+  socket.on("noSwitchTick", (data) => { emit("noSwitchTick", data) })
+
+  socket.on("switchTick", (data) => { emit("switchTick", data) })
 });
 
 var port = process.argv[2] || 3003

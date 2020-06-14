@@ -17,3 +17,27 @@ div {
 }
 
 button { margin: 2px; }
+
+/* navbar css */
+
+.navbar {
+  color: #ffffff;
+  background-color: #f4511e;
+  padding: 0;
+  line-height: 1.42857143 !important;
+  letter-spacing: 4px;
+}
+
+/* navbar */
+
+.navbar-light .navbar-nav .nav-link {
+  color: #ffffff;
+  padding: 14px;
+}
+
+.navbar-nav li a:hover,
+.navbar-nav li.active a {
+  color: #f4511e !important;
+  background-color: #fff !important;
+  padding: 14px;
+}
