@@ -41,3 +41,24 @@ button { margin: 2px; }
   background-color: #fff !important;
   padding: 14px;
 }
+
+.btn-info {
+  color: #fff;
+  background-color: #f4511e;
+  border-color: #f4511e;
+}
+
+.btn-info:hover {
+  color: #f4511e;
+  background-color: #ffffff;
+  border-color: #f4511e;
+}
+
+.btn-info:disabled {
+  background-color: #ddd;
+  border-color: #aaa;
+}
+
+.btn-info:hover:disabled {
+  color: #fff;
+}
