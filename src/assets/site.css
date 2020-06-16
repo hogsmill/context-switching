@@ -42,6 +42,18 @@ button { margin: 2px; }
   padding: 14px;
 }
 
+.game-name {
+  padding-right: 2px;
+}
+.set-game-name-modal {
+  height: 120px;
+}
+
+#game-name {
+  display: inline-block;
+  width: 30%;
+}
+
 .btn-info {
   color: #fff;
   background-color: #f4511e;

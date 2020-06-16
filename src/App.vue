@@ -32,6 +32,10 @@
     <div v-if="showAbout">
       <AboutView />
     </div>
+    <div class="game-name text-right">
+      <button class="btn btn-sm btn-info" v-if="!gameName" @click="show">Set Game Name</button>
+      <span v-if="gameName">Game: {{gameName}}</span>
+    </div>
     <div v-if="!showAbout">
       <h1>Context Switching</h1>
       <div class="container">
@@ -76,10 +80,19 @@
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
+
+    <modal name="set-game-name" :height="120" :classes="['rounded']">
+      <div class="text-right"><span @click="hide" class="glyphicon glyphicon-star">x</span></div>
+      <h4>Enter Your Game Name</h4>
+      <div class="set-game-name">
+        <input type="text" id="game-name" class="form-control" />
+        <button class="btn btn-sm btn-info" @click="saveGameName">Save</button>
+      </div>
+    </modal>
+
   </div>
 </template>
 
@@ -95,6 +108,8 @@ export default {
   },
   data() {
     return {
+      gameName: '',
+      starter: {noSwitch: false, switch: false},
       showAbout: false,
       host: false,
       topics: 3,
@@ -128,6 +143,16 @@ export default {
     }
   },
   methods: {
+    show () {
+      this.$modal.show('set-game-name');
+    },
+    hide () {
+      this.$modal.hide('set-game-name');
+    },
+    saveGameName: function() {
+      this.gameName = document.getElementById('game-name').value
+      this.hide()
+    },
     getTime: function(context) {
       var minutes = parseInt(context.time / 60)
       var seconds = context.time - (minutes * 60)
@@ -191,14 +216,23 @@ export default {
       context.time = 0
     },
 
+    emit: function(action, data) {
+      if (! data) {
+        data = {}
+      }
+      data.gameName = this.gameName
+      this.socket.emit(action, data)
+    },
+
     // No Switching
 
     goNoSwitch: function(event) {
       var context = this.contexts.noSwitching
       this.storeGo(context, event.target)
       this.start(context)
+      this.starter.noSwitch = true
       this.getTopics(context)
-      this.socket.emit("noSwitchTick")
+      this.emit("noSwitchTick")
     },
     _goNoSwitch: function() {
       var context = this.contexts.noSwitching
@@ -212,9 +246,10 @@ export default {
         document.getElementsByClassName('no-switching-input')[col].focus()
       }
       context.time = context.time + 1
-      if (context.time < 60) {
-        this.socket.emit("noSwitchTick")
+      if (context.time < 60 &&this.starter) {
+        this.emit("noSwitchTick")
       } else {
+        this.starter.noSwitch = false
         this.stop(context)
       }
     },
@@ -225,6 +260,7 @@ export default {
       var context = this.contexts.switching
       this.storeGo(context, event.target)
       this.start(context)
+      this.starter.noSwitch = true
       this.getTopics(context)
       document.getElementsByClassName('switching-input')[0].focus()
       this.socket.emit("switchTick")
@@ -232,9 +268,10 @@ export default {
     _goSwitch: function() {
       var context = this.contexts.switching
       context.time = context.time + 1
-      if (context.time < 60) {
+      if (context.time < 60 && this.starter.noSwitch) {
         this.socket.emit("switchTick")
       } else {
+        this.starter.noSwitch = false
         this.stop(context)
       }
     }
@@ -254,13 +291,19 @@ export default {
       this.host = true
     }
     this.socket.on("contexts", (data) => {
-      this.contexts = data
+      if (data.gameName == this.gameName) {
+        this.contexts = data
+      }
     })
-    this.socket.on("noSwitchTick", () => {
-      setTimeout(this._goNoSwitch, 1000)
+    this.socket.on("noSwitchTick", (data) => {
+      if (data.gameName == this.gameName) {
+        setTimeout(this._goNoSwitch, 1000)
+      }
     })
-    this.socket.on("switchTick", () => {
-      setTimeout(this._goSwitch, 1000)
+    this.socket.on("switchTick", (data) => {
+      if (data.gameName == this.gameName) {
+        setTimeout(this._goSwitch, 1000)
+      }
     })
   }
 }
