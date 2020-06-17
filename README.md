@@ -1,4 +1,4 @@
-# Pig Racing
+# Context Switching
 
 ## Project setup
 ```
@@ -22,5 +22,11 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-"# pig-racing"
-"# context-switching" 
+
+## Running the node.js server for socket.io
+
+```
+Navigate to coin-game/coin-game/src
+Then run 'node server.js'
+This is will listen on localhost:3003
+```
