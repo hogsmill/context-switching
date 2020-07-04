@@ -34,6 +34,12 @@ io.on("connection", (socket) => {
 
   socket.on("contexts", (data) => { emit("contexts", data) })
 
+  socket.on("start", (data) => { emit("start", data) })
+
+  socket.on("stop", (data) => { emit("stop", data) })
+
+  socket.on("enter", (data) => { emit("enter", data) })
+
   socket.on("noSwitchTick", (data) => { emit("noSwitchTick", data) })
 
   socket.on("switchTick", (data) => { emit("switchTick", data) })
