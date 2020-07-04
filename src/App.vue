@@ -24,9 +24,8 @@
                 :class="{active : topic.active}">
                 <h4>{{topic.topic}}</h4>
                 <input type="text" disabled="true" tabindex="-1"
-                  v-model="contexts.noSwitching.topics[topicIndex].newValue"
                   class="form-control no-switching-input"
-                  v-on:keyup.enter="enter(contexts.noSwitching, topicIndex)"/>
+                  v-on:keyup.enter="enter($event, topicIndex)" />
                 <div v-for="(item, itemIndex) in topic.items" :key="itemIndex">
                   {{item}}
                 </div>
@@ -45,9 +44,8 @@
                 :class="{active : topic.active}">
                 <h4>{{topic.topic}}</h4>
                 <input type="text" disabled="true"
-                  v-model="contexts.switching.topics[topicIndex].newValue"
                   class="form-control switching-input"
-                  v-on:keyup.enter="enter(contexts.switching, topicIndex)"/>
+                  v-on:keyup.enter="enter($event, topicIndex)"/>
                 <div v-for="(item, itemIndex) in topic.items" :key="itemIndex">
                   {{item}}
                 </div>
@@ -80,38 +78,7 @@ export default {
   },
   data() {
     return {
-      //gameName: '',
-      starter: {noSwitch: false, switch: false},
-      topics: 3,
-      timePerTopic: 20,
-      topicsList: [
-        "Red", "Alive", "Square",
-        "Dead", "Insect", "Cold"
-      ],
-      contexts: {
-        noSwitching: {
-          time: 0,
-          goButton: "go-no-switch",
-          switching: false,
-          inputs: 'no-switching-input',
-          topics: [
-            {topic: "", active: false, items: []},
-            {topic: "", active: false, items: []},
-            {topic: "", active: false, items: []}
-          ]
-        },
-        switching: {
-          switching: true,
-          time: 0,
-          goButton: "go-switch",
-          inputs: 'switching-input',
-          topics: [
-            {topic: "", active: false, items: []},
-            {topic: "", active: false, items: []},
-            {topic: "", active: false, items: []}
-          ]
-        }
-      }
+      currentContext: ''
     }
   },
   methods: {
@@ -133,25 +100,39 @@ export default {
       if (seconds < 10) { seconds = '0' + seconds }
       return minutes + ':' + seconds
     },
-    enter: function(context, topic) {
-      context.topics[topic].items.push(context.topics[topic].newValue)
-      context.topics[topic].newValue = ''
-      this.socket.emit("contexts", this.contexts)
-      if (context.switching) {
-        topic = topic == 2 ? 0 : topic + 1
-        this.emit("enter", { topic: topic })
-        document.getElementsByClassName('switching-input')[topic].focus()
-      }
+    inputs: function() {
+      return document.getElementsByClassName(this.contexts[this.currentContext].inputs)
     },
-    _enter: function(n) {
-      for (var i = 0; i < 3; i++) {
-        if (i == n) {
-          this.contexts.switching.topics[i].active = true
-        } else {
-          this.contexts.switching.topics[i].active = false
+    goButton: function() {
+      return document.getElementById(this.contexts[this.currentContext].goButton)
+    },
+    setTime: function(time) {
+      this.$store.dispatch("updateTime", {context: this.currentContext, time: time})
+    },
+    setTopicActive(n, active) {
+      if (active) {
+        this.inputs()[n].focus()
+      }
+      this.$store.dispatch("updateTopicActive", {context: this.currentContext, topic: n, active: active})
+    },
+    enter: function(event, topic) {
+      this.emit("enter", { context: this.currentContext, topic: topic, value: event.target.value })
+      event.target.value = ''
+    },
+    _enter: function(data) {
+      var items = this.contexts[data.context].topics[data.topic].items
+      items.push(data.value)
+      this.$store.dispatch("updateTopicItems", {context: data.context, topic: data.topic, items: items})
+      if (data.context == "switching") {
+        var topic = data.topic == 2 ? 0 : data.topic + 1
+        for (var i = 0; i < 3; i++) {
+          if (i == topic) {
+            this.setTopicActive(i, true)
+          } else {
+            this.setTopicActive(i, false)
+          }
         }
       }
-      document.getElementsByClassName('switching-input')[n].focus()
     },
     countItems: function(context) {
       var n = 0
@@ -160,7 +141,7 @@ export default {
       }
       return n
     },
-    getTopics: function(context) {
+    getTopics: function() {
       var topics = []
       var l = this.topicsList.length
       while (topics.length < 3) {
@@ -176,32 +157,38 @@ export default {
           topics.push(topic)
         }
       }
-      for (var i = 0; i < this.topics; i++) {
-        context.topics[i].topic = topics[i]
-      }
-      this.emit("contexts", this.contexts)
+      this.emit("setTopics", {context: this.currentContext, topics: topics})
     },
-    start: function(context) {
-      context.time = 0
-      this.emit("start", context)
+    _setTopics: function(data) {
+      this.$store.dispatch("updateTopics", {context: data.context, topics: data.topics})
+    },
+    setContext: function(data) {
+      this.$store.dispatch("updateContext", {name: data.contextName, context: data.context})
+      this.contextName = data.contextName
+      this.context = data.context
+    },
+    start: function() {
+      this.emit("start", {context: this.currentContext})
     },
     _start: function(context) {
-      var inputs = document.getElementsByClassName(context.inputs)
+      this.currentContext = context
+      this.setTime(0)
+      var inputs = this.inputs()
       for (var i = 0; i < inputs.length; i++) {
         inputs[i].disabled = false
       }
-      document.getElementById(context.goButton).disabled = true
+      this.goButton().disabled = true
     },
-    stop: function(context) {
-      this.emit("stop", context)
+    stop: function() {
+      this.emit("stop", {context: this.currentContext})
     },
-    _stop: function(context) {
-      var inputs = document.getElementsByClassName(context.inputs)
+    _stop: function() {
+      var inputs = this.inputs()
       for (var i = 0; i < inputs.length; i++) {
-        context.topics[i].active = false
+        this.setTopicActive(i, false)
         inputs[i].disabled = true
       }
-      document.getElementById(context.goButton).disabled = false
+      this.goButton().disabled = false
     },
 
     emit: function(action, data) {
@@ -215,58 +202,57 @@ export default {
     // No Switching
 
     goNoSwitch: function() {
-      var context = this.contexts.noSwitching
-      this.start(context)
-      this.starter.noSwitch = true
-      this.getTopics(context)
-      this.emit("noSwitchTick", {time: 0})
+      this.currentContext = 'noSwitching'
+      this.start()
+      this.$store.dispatch("updateStarterNoSwitch", true)
+      this.getTopics()
+      this.emit("noSwitchTick", {context: this.currentContext, time: 0})
     },
     _goNoSwitch: function(time) {
-      var context = this.contexts.noSwitching
-      context.time = time
-      if (context.time >= 60) {
-        this.starter.noSwitch = false
-        this.stop(context)
+      this.setTime(time)
+      if (this.time >= 60) {
+        this.$store.dispatch("updateStarterNoSwitch", false)
+        this.stop()
       } else {
-        var rem = context.time % this.timePerTopic
+        var rem = this.time % this.timePerTopic
         if (rem == 0) {
           for (var i = 0; i < this.topics; i++) {
-            context.topics[i].active = false
+            this.setTopicActive(i, false)
           }
-          var col = context.time / this.timePerTopic
-          context.topics[col].active = true
-          document.getElementsByClassName('no-switching-input')[col].focus()
+          var col = this.time / this.timePerTopic
+          this.setTopicActive(col, true)
         }
       }
-      if (this.starter.noSwitch && context.time < 60) {
+      if (this.starterNoSwitch && this.time < 60) {
+        var data = {context: this.currentContext, time: this.time + 1}
         var self = this
-        setTimeout(function() { self.emit("noSwitchTick", {time: context.time + 1}) }, 1000)
+        setTimeout(function() { self.emit("noSwitchTick", data) }, 1000)
       }
     },
 
     // Switching
 
     goSwitch: function() {
-      var context = this.contexts.switching
-      this.start(context)
-      this.starter.switch = true
-      this.getTopics(context)
-      this.emit("switchTick", {time: 0})
+      this.currentContext = 'switching'
+      this.context = this.contexts.noSwitching
+      this.start()
+      this.$store.dispatch("updateStarterSwitch", true)
+      this.getTopics()
+      this.emit("switchTick", {context: this.currentContext, time: 0})
     },
     _goSwitch: function(time) {
-      var context = this.contexts.switching
-      context.time = time
-      if (time == 0) {
-        context.topics[0].active = true
-        document.getElementsByClassName('switching-input')[0].focus()
+      this.setTime(time)
+      if (this.time == 0) {
+        this.setTopicActive(0, true)
       }
-      if (context.time >= 60) {
-        this.starter.switch = false
-        this.stop(context)
+      if (this.time >= 60) {
+        this.$store.dispatch("updateStarterSwitch", false)
+        this.stop()
       }
-      if (this.starter.switch && context.time < 60) {
+      if (this.starterSwitch && this.time < 60) {
+        var data = {context: this.currentContext, time: this.time + 1}
         var self = this
-        setTimeout(function() { self.emit("switchTick", {time: context.time + 1}) }, 1000)
+        setTimeout(function() { self.emit("switchTick", data) }, 1000)
       }
     }
 
@@ -280,6 +266,27 @@ export default {
     },
     gameName() {
       return this.$store.getters.getGameName
+    },
+    starterNoSwitch() {
+      return this.$store.getters.getStarterNoSwitch
+    },
+    starterSwitch() {
+      return this.$store.getters.getStarterSwitch
+    },
+    topics() {
+      return this.$store.getters.getTopics
+    },
+    timePerTopic() {
+      return this.$store.getters.getTimePerTopic
+    },
+    topicsList() {
+      return this.$store.getters.getTopicsList
+    },
+    contexts() {
+      return this.$store.getters.getContexts
+    },
+    time() {
+      return this.$store.getters.getContexts[this.currentContext].time
     }
   },
   created() {
@@ -299,24 +306,34 @@ export default {
       this.$store.dispatch("updateGameName", params.getParam("game"))
     }
 
+    this.socket.on("context", (data) => {
+      if (data.gameName == this.gameName) {
+        this.$store.dispatch("updateContext", data)
+      }
+    })
     this.socket.on("contexts", (data) => {
       if (data.gameName == this.gameName) {
-        this.contexts = data
+        this.$store.dispatch("updateContexts", data)
       }
     })
     this.socket.on("start", (data) => {
       if (data.gameName == this.gameName) {
-        this._start(data)
+        this._start(data.context)
       }
     })
     this.socket.on("stop", (data) => {
       if (data.gameName == this.gameName) {
-        this._stop(data)
+        this._stop()
+      }
+    })
+    this.socket.on("setTopics", (data) => {
+      if (data.gameName == this.gameName) {
+        this._setTopics(data)
       }
     })
     this.socket.on("enter", (data) => {
       if (data.gameName == this.gameName) {
-        this._enter(data.topic)
+        this._enter(data)
       }
     })
     this.socket.on("noSwitchTick", (data) => {
@@ -334,5 +351,6 @@ export default {
 </script>
 
 <style>
+ .switch, .no-switch { padding-bottom: 6px; }
  .active { background-color: yellow; }
 </style>

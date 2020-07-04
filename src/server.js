@@ -32,11 +32,15 @@ io.on("connection", (socket) => {
     connectDebugOff || console.log(`User with socket id ${socket.id} has disconnected. (${connections} connections)`)
   })
 
+  socket.on("contexs", (data) => { emit("context", data) })
+
   socket.on("contexts", (data) => { emit("contexts", data) })
 
   socket.on("start", (data) => { emit("start", data) })
 
   socket.on("stop", (data) => { emit("stop", data) })
+
+  socket.on("setTopics", (data) => { emit("setTopics", data) })
 
   socket.on("enter", (data) => { emit("enter", data) })
 
