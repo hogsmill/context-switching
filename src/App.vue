@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="mb-4">
     <appHeader></appHeader>
-
+    <WalkThroughView />
     <div v-if="showAbout">
       <AboutView />
     </div>
@@ -66,6 +66,7 @@ import params from './lib/params.js'
 
 import Header from "./components/Header.vue";
 import AboutView from "./components/about/AboutView.vue";
+import WalkThroughView from "./components/about/WalkThroughView.vue";
 
 import GameName from "./components/GameName.vue";
 
@@ -74,6 +75,7 @@ export default {
   components: {
     appHeader: Header,
     AboutView,
+    WalkThroughView,
     GameName
   },
   data() {
