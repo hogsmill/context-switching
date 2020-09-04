@@ -49,6 +49,13 @@
         </p>
         <p>Note: Press Return, not Tab, to enter items...</p>
       </div>
+      <div class="mt-4" v-if="step == 4">
+        <h4>Game Play</h4>
+        <p>
+          If you want to play as a team, simply set the Game Name (top left) to
+          the same for each team member before you start the game.
+        </p>
+      </div>
       <div class="buttons" v-if="step < noOfScreens()">
         <button class="btn btn-info" @click="incrementStep">Next</button>
         <button class="btn btn-info" @click="hide()">Skip</button>
@@ -71,6 +78,7 @@ export default {
       positions: {
         2: { height: 350 },
         3: { height: 220 },
+        4: { height: 220 }
       }
     };
   },
@@ -142,13 +150,18 @@ export default {
 };
 </script>
 
-<style>
-.buttons {
-  padding: 6px;
-}
-#walk-through p, #walk-through li {
-  text-align: left;
-  margin-left: 8px;
-  margin-right: 8px;
-}
+<style lang="scss">
+
+  .buttons {
+    padding: 6px;
+  }
+
+  #walk-through {
+    p, li {
+      text-align: left;
+      margin-left: 16px;
+      margin-right: 16px;
+    }
+ }
+ 
 </style>
