@@ -15,7 +15,7 @@
 
           <div class="col no-switching">
             <h2>No Context Switching</h2>
-            <h3>{{getTime(contexts.noSwitching)}} <button id="go-no-switch" class="btn btn-info" @click="goNoSwitch($event)">Go</button></h3>
+            <h3>{{getTime(contexts.noSwitching)}} <button id="go-no-switch" class="btn btn-info" :disabled="currentContext == 'switching'" @click="goNoSwitch($event)">Go</button></h3>
             <h4>{{countItems(contexts.noSwitching)}} Items</h4>
             <h3>Think of things that are: </h3>
             <div class="row">
@@ -35,7 +35,7 @@
 
           <div class="col switching">
             <h2>Context Switching</h2>
-            <h3>{{getTime(contexts.switching)}} <button id="go-switch" class="btn btn-info" @click="goSwitch($event)">Go</button></h3>
+            <h3>{{getTime(contexts.switching)}} <button id="go-switch" class="btn btn-info" :disabled="currentContext == 'noSwitching'" @click="goSwitch($event)">Go</button></h3>
             <h4>{{countItems(contexts.switching)}} Items</h4>
             <h3>Think of things that are: </h3>
             <div class="row">
