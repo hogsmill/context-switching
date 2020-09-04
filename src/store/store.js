@@ -13,8 +13,10 @@ export const store = new Vuex.Store({
     topics: 3,
     timePerTopic: 20,
     topicsList: [
-      "Red", "Alive", "Square",
-      "Dead", "Insect", "Cold"
+      "Red", "Alive", "Square", "Animal", "Place"
+      "Dead", "Insect", "Cold", "Wet", "Big", "Far Away",
+      "Green", "Unpleasant", "Smelly", "Hot", "Food",
+      "Drink", "Expensive", "Small"
     ],
     contexts: {
       noSwitching: {
