@@ -17,12 +17,14 @@
         <h4>Welcome to Context Switching</h4>
         <div>
           <p>
-            This activity demonstrates the effects of context switching,</p>
-          <p>After playing
+            This activity demonstrates the effects of context switching,
+          </p>
+          <p>
+            After playing
             this, maybe you'll realise how expensive a 5 minute interruption when a
             developer is "in the zone" actually is...
           </p>
-          <div class="context-switching"></div>
+          <div class="context-switching" />
         </div>
       </div>
       <div class="mt-4" v-if="step == 2">
@@ -33,13 +35,19 @@
             items in that topic as you can think of in a minute.
           </p>
           <ul>
-            <li>In the "<em>No Switching</em>" game (on left), the topic changes every
-              20 seconds</li>
-            <li>In the "<em>Switching</em>" game (on right), the topic changes every
-              time an item is typed in.</li>
+            <li>
+              In the "<em>No Switching</em>" game (on left), the topic changes every
+              20 seconds
+            </li>
+            <li>
+              In the "<em>Switching</em>" game (on right), the topic changes every
+              time an item is typed in.
+            </li>
           </ul>
-          <p>Players will usually think of more item in the "No Switching" game, as
-            they are not context switching</p>
+          <p>
+            Players will usually think of more item in the "No Switching" game, as
+            they are not context switching
+          </p>
         </div>
       </div>
       <div class="mt-4" v-if="step == 3">
@@ -57,11 +65,17 @@
         </p>
       </div>
       <div class="buttons" v-if="step < noOfScreens()">
-        <button class="btn btn-info" @click="incrementStep">Next</button>
-        <button class="btn btn-info" @click="hide()">Skip</button>
+        <button class="btn btn-info" @click="incrementStep">
+          Next
+        </button>
+        <button class="btn btn-info" @click="hide()">
+          Skip
+        </button>
       </div>
       <div class="buttons" v-if="step == noOfScreens()">
-        <button class="btn btn-info" @click="hide()">Play Game</button>
+        <button class="btn btn-info" @click="hide()">
+          Play Game
+        </button>
       </div>
     </modal>
   </div>
@@ -80,14 +94,29 @@ export default {
         3: { height: 220 },
         4: { height: 220 }
       }
-    };
+    }
+  },
+  computed: {
+    walkThrough() {
+      return this.$store.getters.getWalkThrough
+    },
+    showAbout() {
+      return this.$store.getters.getShowAbout
+    },
+  },
+  mounted() {
+    const self = this
+    if (params.isParam('walkThrough')) {
+      self.$store.dispatch('updateWalkThrough', true)
+      self.$modal.show('walk-through')
+    }
   },
   methods: {
     noOfScreens() {
       return Object.keys(this.positions).length + 1
     },
     setDefault() {
-      var elem = document.getElementsByClassName("vm--modal")[0].getBoundingClientRect()
+      const elem = document.getElementsByClassName('vm--modal')[0].getBoundingClientRect()
       this.default = {
         top: elem.top,
         left: elem.left,
@@ -96,22 +125,22 @@ export default {
       }
     },
     show() {
-      this.$modal.show("walk-through");
+      this.$modal.show('walk-through')
     },
     hide() {
-      this.$modal.hide("walk-through");
+      this.$modal.hide('walk-through')
     },
     help() {
-      this.step = 1;
-      this.show();
+      this.step = 1
+      this.show()
     },
     incrementStep() {
       if (this.step == 1) {
         this.setDefault()
       }
       this.step = this.step + 1
-      var elem = document.getElementsByClassName("vm--modal")[0]
-      var target, positions = {}
+      const elem = document.getElementsByClassName('vm--modal')[0]
+      let target, positions = {}
       if (this.positions[this.step].target) {
         target = document.getElementById(this.positions[this.step].target)
         target = target.getBoundingClientRect()
@@ -132,22 +161,7 @@ export default {
       elem.style.height = positions.height +'px'
     }
   },
-  computed: {
-    walkThrough() {
-      return this.$store.getters.getWalkThrough;
-    },
-    showAbout() {
-      return this.$store.getters.getShowAbout;
-    },
-  },
-  mounted() {
-    const self = this;
-    if (params.isParam("walkThrough")) {
-      self.$store.dispatch("updateWalkThrough", true);
-      self.$modal.show("walk-through");
-    }
-  },
-};
+}
 </script>
 
 <style lang="scss">

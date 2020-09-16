@@ -1,10 +1,10 @@
 
-var Params = {
+const Params = {
 
   isParam: function(param) {
-    var search = location.search.replace('?', '').split('&')
-    var found = false
-    for (var i = 0; i < search.length; i++) {
+    const search = location.search.replace('?', '').split('&')
+    let found = false
+    for (let i = 0; i < search.length; i++) {
       if (search[i] == param) {
         found = true
       }
@@ -13,10 +13,10 @@ var Params = {
   },
 
   getParam: function(param) {
-    var search = location.search.replace('?', '').split('&')
-    var found = ''
-    for (var i = 0; i < search.length; i++) {
-      var p = search[i].match(/(.*)=(.*)/)
+    const search = location.search.replace('?', '').split('&')
+    let found = ''
+    for (let i = 0; i < search.length; i++) {
+      const p = search[i].match(/(.*)=(.*)/)
       if (p && p[1] == param) {
         found = p[2]
       }
