@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
+    thisGame: 'Context Switching',
     showAbout: false,
     walkThrough: false,
     host: false,
@@ -44,6 +45,9 @@ export const store = new Vuex.Store({
     }
   },
   getters: {
+    thisGame: (state) => {
+      return state.thisGame
+    },
     getShowAbout: (state) => {
       return state.showAbout
     },
