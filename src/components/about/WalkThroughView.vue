@@ -7,7 +7,7 @@
     >
       Explain this for me...
     </button>
-    <modal name="walk-through" id="walk-through" :classes="['rounded']">
+    <modal name="walk-through" id="walk-through" :height="350" :classes="['rounded']">
       <div class="float-right mr-2 mt-1">
         <button type="button" class="close" @click="hide" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -24,7 +24,16 @@
             this, maybe you'll realise how expensive a 5 minute interruption when a
             developer is "in the zone" actually is...
           </p>
-          <div class="context-switching" />
+          <p>
+            If you'd like more info, or would like to discuss facilitation, send us your email
+            in the box below, and we can discuss your needs.
+          </p>
+          <div>
+            Email: <input type="email" id="email" placeholder="Email address">
+            <button class="btn btn-info btn-sm" @click="facilitate()">
+              Submit
+            </button>
+          </div>
         </div>
       </div>
       <div class="mt-4" v-if="step == 2">
@@ -82,6 +91,7 @@
 </template>
 
 <script>
+import mailFuns from '../../lib/mail.js'
 import params from '../../lib/params.js'
 
 export default {
@@ -97,6 +107,9 @@ export default {
     }
   },
   computed: {
+    thisGame() {
+      return this.$store.getters.thisGame
+    },
     walkThrough() {
       return this.$store.getters.getWalkThrough
     },
@@ -159,8 +172,17 @@ export default {
       elem.style.top = positions.top + 'px'
       elem.style.width = positions.width + 'px'
       elem.style.height = positions.height +'px'
+    },
+    facilitate() {
+      mailFuns.post({
+          action: 'Facilitation request (Walkthrough) from ' + this.thisGame,
+          email: encodeURIComponent(document.getElementById('email').value),
+          comments: 'Facilitation Request'
+        },
+        'Thanks for your request - we\'ll get back to you as soon as we can with details'
+        )
     }
-  },
+  }
 }
 </script>
 
@@ -176,6 +198,10 @@ export default {
       margin-left: 16px;
       margin-right: 16px;
     }
+    #email {
+      width: 50%;
+      margin: 6px;
+    }
  }
- 
+
 </style>
