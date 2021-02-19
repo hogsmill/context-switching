@@ -126,11 +126,12 @@ export default {
     }
   },
   created() {
-    let host = '77.68.122.69'
-      if (location.hostname == 'localhost') {
-        host = 'localhost'
-      }
-      const connStr = 'http://' + host + ':3003'
+    let connStr
+    if (location.hostname == 'localhost') {
+      connStr = 'http://localhost:3003'
+    } else {
+      connStr = 'https://agilesimulations.co.uk:3003'
+    }
       console.log('Connecting to: ' + connStr)
       this.socket = io(connStr)
   },
