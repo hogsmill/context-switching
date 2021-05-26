@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "cli-plugin-eslint": "^0.1.0",
-    "core-js": "^3.12.0",
+    "core-js": "^3.13.0",
     "death": "^1.1.0",
     "highlight.js": "^10.7.2",
     "jquery": "^3.6.0",
