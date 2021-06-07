@@ -61,6 +61,35 @@ function emit(event, data) {
   io.emit(event, data)
 }
 
+function start(data, t) {
+  if (t < 60) {
+    emit('tick', {gameName: data.gameName, context: data.context, time: t})
+    t = t + 1
+    setTimeout(() => {
+      start(data, t)
+    }, 1000)
+  } else {
+    emit('stop', {gameName: data.gameName, context: data.context})
+  }
+}
+
+const topicsList = [
+  'Red', 'Alive', 'Square', 'an Animal', 'a Place', 'Dead', 'an Insect', 'Cold', 'Wet', 'Big', 'Far Away',
+  'Green', 'Unpleasant', 'Smelly', 'Hot', 'a Food', 'a Drink', 'Expensive', 'Small', 'a Multiple of 3', 'Starts with A'
+]
+
+function getTopics(data) {
+  const found = []
+  while (found.length < 3) {
+    const topic = topicsList[parseInt(Math.random() * topicsList.length)]
+    if (found.indexOf(topic) < 0) {
+      found.push(topic)
+    }
+  }
+  data.topics = found
+  emit('setTopics', data)
+}
+
 io.on('connection', (socket) => {
   connections = connections + 1
   if (connections > maxConnections) {
@@ -75,21 +104,17 @@ io.on('connection', (socket) => {
     connectDebugOff || console.log(`User with socket id ${socket.id} has disconnected. (${connections} connections)`)
   })
 
-  socket.on('context', (data) => { emit('context', data) })
+  socket.on('sendSetContext', (data) => { emit('setContext', data) })
 
-  socket.on('contexts', (data) => { emit('contexts', data) })
+  socket.on('sendStart', (data) => {
+    emit('start', data)
+    getTopics(data)
+    start(data, 0)
+  })
 
-  socket.on('start', (data) => { emit('start', data) })
+  socket.on('sendSetTopics', (data) => { getTopicsList(data) })
 
-  socket.on('stop', (data) => { emit('stop', data) })
-
-  socket.on('setTopics', (data) => { emit('setTopics', data) })
-
-  socket.on('enter', (data) => { emit('enter', data) })
-
-  socket.on('noSwitchTick', (data) => { emit('noSwitchTick', data) })
-
-  socket.on('switchTick', (data) => { emit('switchTick', data) })
+  socket.on('sendAddTopicValue', (data) => { emit('addTopicValue', data) })
 })
 
 const port = process.argv[2] || 3003

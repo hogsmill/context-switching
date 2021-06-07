@@ -1,13 +1,12 @@
 <template>
   <div class="game-name" v-if="!showAbout">
-    <div class="game-name text-right">
-      <button class="btn btn-sm btn-info" v-if="!gameName" @click="show">
+    <div class="game-name">
+      <button class="btn btn-sm btn-info" @click="show">
         Set Game Name
       </button>
-      <span v-if="gameName" @click="show">Game: {{ gameName }}</span>
     </div>
 
-    <modal name="set-game-name" :height="120" :classes="['rounded']">
+    <modal name="set-game-name" :height="120" :classes="['rounded', 'game-name-modal']">
       <div class="text-right">
         <span @click="hide" class="glyphicon glyphicon-star">x</span>
       </div>
@@ -48,11 +47,36 @@ export default {
 }
 </script>
 
-<style>
-  .game-name { padding-right: 2px; }
-  .game-name button { font-size: smaller; background-color: #aaa; border: 1px solid #aaa; }
-  .game-name button:hover { color: #aaa; background-color: #fff; }
-  .set-game-name-modal { height: 120px; }
+<style lang="scss">
+  .game-name {
+    width: 150px;
+    display: inline-block;
 
-  #game-name { display: inline-block; width: 30%; margin-right: 6px; }
+    button {
+      font-size: smaller;
+      background-color: #aaa;
+      border: 1px solid #aaa;
+
+      &:hover {
+        color: #aaa;
+        background-color: #fff;
+      }
+    }
+  }
+
+  .game-name-modal {
+    height: 120px;
+    max-width: 100%;
+  }
+
+  #game-name {
+    display: inline-block;
+    width: 30%; margin-right: 6px;
+  }
+
+@media screen and (max-width: 767px) {
+  .game-name-modal {
+    left: 0 !important;
+  }
+}
 </style>

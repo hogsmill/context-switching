@@ -1,12 +1,13 @@
 <template>
-  <div>
+  <div class="explain">
     <button
-      v-if="walkThrough && !showAbout"
+      v-if="!showAbout"
       class="btn btn-sm btn-info"
       @click="help"
     >
       Explain this for me...
     </button>
+
     <modal name="walk-through" id="walk-through" :height="350" :classes="['rounded']">
       <div class="float-right mr-2 mt-1">
         <button type="button" class="close" @click="hide" aria-label="Close">
@@ -173,12 +174,18 @@ export default {
 </script>
 
 <style lang="scss">
+  .explain {
+    width: 150px;
+    display: inline-block;
+  }
 
   .buttons {
     padding: 6px;
   }
 
   #walk-through {
+    max-width: 100%;
+
     p, li {
       text-align: left;
       margin-left: 16px;
@@ -189,5 +196,4 @@ export default {
       margin: 6px;
     }
  }
-
 </style>

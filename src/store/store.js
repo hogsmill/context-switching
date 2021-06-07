@@ -3,6 +3,10 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+function getContext(state, context) {
+  return context == 'switching' ? state.switching : state.noSwitching
+}
+
 export const store = new Vuex.Store({
   state: {
     thisGame: 'Context Switching',
@@ -10,38 +14,25 @@ export const store = new Vuex.Store({
     walkThrough: false,
     host: false,
     gameName: '',
-    starter: {noSwitch: false, switch: false},
+    context: '',
+    running: false,
     topics: 3,
     timePerTopic: 20,
-    topicsList: [
-      'Red', 'Alive', 'Square', 'Animal', 'Place',
-      'Dead', 'Insect', 'Cold', 'Wet', 'Big', 'Far Away',
-      'Green', 'Unpleasant', 'Smelly', 'Hot', 'Food',
-      'Drink', 'Expensive', 'Small'
-    ],
-    contexts: {
-      noSwitching: {
-        time: 0,
-        goButton: 'go-no-switch',
-        switching: false,
-        inputs: 'no-switching-input',
-        topics: [
-          {topic: '', active: false, items: []},
-          {topic: '', active: false, items: []},
-          {topic: '', active: false, items: []}
-        ]
-      },
-      switching: {
-        switching: true,
-        time: 0,
-        goButton: 'go-switch',
-        inputs: 'switching-input',
-        topics: [
-          {topic: '', active: false, items: []},
-          {topic: '', active: false, items: []},
-          {topic: '', active: false, items: []}
-        ]
-      }
+    noSwitching: {
+      active: 0,
+      topics: [
+        {topic: '', active: false, items: []},
+        {topic: '', active: false, items: []},
+        {topic: '', active: false, items: []}
+      ]
+    },
+    switching: {
+      active: 0,
+      topics: [
+        {topic: '', active: false, items: []},
+        {topic: '', active: false, items: []},
+        {topic: '', active: false, items: []}
+      ]
     }
   },
   getters: {
@@ -60,14 +51,37 @@ export const store = new Vuex.Store({
     getGameName: (state) => {
       return state.gameName
     },
-    getStarterNoSwitch: (state) => {
-      return state.starter.noSwitch
+    getContext: (state) => {
+      return state.context
     },
-    getStarterSwitch: (state) => {
-      return state.starter.switch
+    getSwitchingItems: (state) => {
+      return parseInt(
+        state.switching.topics[0].items.length +
+        state.switching.topics[1].items.length +
+        state.switching.topics[2].items.length)
+    },
+    getNoSwitchingItems: (state) => {
+      return parseInt(
+        state.noSwitching.topics[0].items.length +
+        state.noSwitching.topics[1].items.length +
+        state.noSwitching.topics[2].items.length)
+    },
+    getRunning: (state) => {
+      return state.running
+    },
+    getNoOfItems: (state) => {
+      const context = getContext(state, state.context)
+      let n = 0
+      for (let i = 0; i < context.topics; i++) {
+        n = n + context.topics[i].length
+      }
+      return n
     },
     getTopics: (state) => {
-      return state.topics
+      return getContext(state, state.context).topics
+    },
+    getActiveTopic: (state) => {
+      return getContext(state, state.context).active
     },
     getTimePerTopic: (state) => {
       return state.timePerTopic
@@ -92,31 +106,40 @@ export const store = new Vuex.Store({
     updateGameName: (state, payload) => {
       state.gameName = payload
     },
-    updateStarterNoSwitch: (state, payload) => {
-      state.starter.noSwitch = payload
+    updateContext: (state, payload) => {
+      state.context = payload.context
+      console.log(state)
     },
-    updateStarterSwitch: (state, payload) => {
-      state.starter.switch = payload
-    },
-    updateTime: (state, payload) => {
-      state.contexts[payload.context].time = payload.time
+    updateRunning: (state, payload) => {
+      state.running = payload
     },
     updateTopics: (state, payload) => {
-      for (let i = 0; i < 3; i++) {
-        state.contexts[payload.context].topics[i].topic = payload.topics[i]
+      const context = getContext(state, payload.context)
+      const topics = []
+      for (let i = 0; i < context.topics.length; i++) {
+        const topic = context.topics[i]
+        topic.topic = payload.topics[i]
+        topic.items = []
+        topics.push(topic)
       }
+      state[payload.context].topics = topics
     },
-    updateTopicActive: (state, payload) => {
-      state.contexts[payload.context].topics[payload.topic].active = payload.active
+    updateActiveTopic: (state, payload) => {
+      state[payload.context].active = payload.topic
     },
-    updateTopicItems: (state, payload) => {
-      state.contexts[payload.context].topics[payload.topic].items = payload.items
-    },
-    updateContext: (state, payload) => {
-      state.contexts[payload.name] = payload.context
-    },
-    updateContexts: (state, payload) => {
-      state.contexts = payload
+    addTopicValue: (state, payload) => {
+      const context = getContext(state, payload.context)
+      const topics = []
+      for (let i = 0; i < context.topics.length; i++) {
+        const topic = context.topics[i]
+        if (i == payload.topic) {
+          const items = topic.items
+          items.push(payload.value)
+          topic.items = items
+        }
+        topics.push(topic)
+      }
+      state[payload.context].topics = topics
     }
   },
   actions: {
@@ -132,6 +155,12 @@ export const store = new Vuex.Store({
     updateGameName: ({ commit }, payload) => {
       commit('updateGameName', payload)
     },
+    updateContext: ({ commit }, payload) => {
+      commit('updateContext', payload)
+    },
+    updateRunning: ({ commit }, payload) => {
+      commit('updateRunning', payload)
+    },
     updateStarterNoSwitch: ({ commit }, payload) => {
       commit('updateStarterNoSwitch', payload)
     },
@@ -144,14 +173,15 @@ export const store = new Vuex.Store({
     updateTopics: ({ commit }, payload) => {
       commit('updateTopics', payload)
     },
-    updateTopicActive: ({ commit }, payload) => {
-      commit('updateTopicActive', payload)
+    updateActiveTopic: ({ commit }, payload) => {
+      commit('updateActiveTopic', payload)
     },
     updateTopicItems: ({ commit }, payload) => {
       commit('updateTopicItems', payload)
     },
-    updateContexts: ({ commit }, payload) => {
-      commit('updateContexts', payload)
-    }
+    addTopicValue: ({ commit }, payload) => {
+      commit('addTopicValue', payload)
+    },
+
   }
 })
