@@ -4,6 +4,7 @@ const os = require('os')
 
 const prod = os.hostname() == 'agilesimulations' ? true : false
 const logFile = prod ? process.argv[4] : 'server.log'
+const port = prod ? process.env.VUE_APP_PORT : 3003
 
 ON_DEATH(function(signal, err) {
   let logStr = new Date()
@@ -116,8 +117,6 @@ io.on('connection', (socket) => {
 
   socket.on('sendAddTopicValue', (data) => { emit('addTopicValue', data) })
 })
-
-const port = process.argv[2] || 3003
 
 httpServer.listen(port, () => {
   console.log('Listening on *:' + port)
