@@ -77,7 +77,7 @@ export default {
     if (location.search == '?host') {
       this.$store.dispatch('updateHost', true)
     }
-    
+    console.log(process.env.VUE_APP_NAME, process.env.VUE_APP_PORT)
     this.appName = process.env.VUE_APP_NAME
   },
   methods: {
