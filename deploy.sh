@@ -17,6 +17,7 @@ done
 REPO="https://github.com/hogsmill/context-switching.git"
 APPS=(
   'context-switching,contextSwitching,3003,Context Switching'
+  'context-switching-new,contextSwitchingNew,3030,Context Switching New'
 )
 
 for ((i = 0; i < ${#APPS[@]}; i++))
@@ -31,9 +32,9 @@ do
 
   echo "------------------------------------------------"
   if [ -z "$APPNAME" ]; then
-    echo "Installing $APP ($COLLECTION, $GAMECOLLECTION, $PORT)"
+    echo "Installing $APP ($COLLECTION, $PORT)"
   else
-    echo "Installing $APP ($COLLECTION, $GAMECOLLECTION, $PORT, $APPNAME, $PASSWORD)"
+    echo "Installing $APP ($COLLECTION, $PORT, $APPNAME, $PASSWORD)"
   fi
   echo "------------------------------------------------"
 
