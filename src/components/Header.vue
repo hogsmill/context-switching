@@ -16,8 +16,11 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <h1>
+      <h1 v-if="!appName">
         Context Switching Game
+      </h1>
+      <h1 v-if="appName">
+        {{ appName }}
       </h1>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item" :class="{ active: !showAbout }">
