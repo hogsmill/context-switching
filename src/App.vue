@@ -72,10 +72,6 @@ export default {
       return this.$store.getters.getRunning
     }
   },
-  created() {
-    console.log(process.vue)
-    this.appName = process.env.VUE_APP_NAME
-  },
   mounted() {
     if (params.isParam('host')) {
       this.$store.dispatch('updateHost', true)

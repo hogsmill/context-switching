@@ -77,6 +77,8 @@ export default {
     if (location.search == '?host') {
       this.$store.dispatch('updateHost', true)
     }
+    
+    this.appName = process.env.VUE_APP_NAME
   },
   methods: {
     updateShowAbout(payload) {
