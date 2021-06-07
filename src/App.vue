@@ -73,6 +73,7 @@ export default {
     }
   },
   created() {
+    console.log(process.vue)
     this.appName = process.env.VUE_APP_NAME
   },
   mounted() {
