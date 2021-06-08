@@ -8,7 +8,7 @@
     </div>
     <div v-if="!showAbout && !gameName" class="plates" />
     <div v-if="!showAbout && gameName">
-      <h1>Game: {{ gameName }}</h1>
+      <h1>Game: {{ gameName }} <i class="fas fa-undo" @click="restart()" /></h1>
       <div class="container">
         <div v-if="gameName" class="context">
           <div>
@@ -100,6 +100,9 @@ export default {
     },
     setContext(context) {
       bus.$emit('sendSetContext', {gameName: this.gameName, context: context})
+    },
+    restart() {
+      console.log('restarting')
     }
   }
 }
@@ -109,6 +112,15 @@ export default {
   .context {
     text-align: center;
     margin-bottom: 24px;
+  }
+
+  .fa-undo {
+    font-size: smaller;
+    color: #888;
+
+    &:hover {
+      color: #444;
+    }
   }
 
   .plates {

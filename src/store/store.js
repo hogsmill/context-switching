@@ -78,6 +78,7 @@ export const store = new Vuex.Store({
       return n
     },
     getTopics: (state) => {
+      console.log(state)
       return getContext(state, state.context).topics
     },
     getActiveTopic: (state) => {

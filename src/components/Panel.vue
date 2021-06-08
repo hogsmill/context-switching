@@ -2,8 +2,11 @@
   <div class="col">
     <h3>
       {{ getTime() }}
-      <button id="go-switch" :disabled="running" class="btn btn-info" @click="go()">
+      <button id="go" :disabled="running || !context" class="btn btn-info" @click="go()">
         Go
+      </button>
+      <button id="stop" v-if="running" class="btn btn-info" @click="stop()">
+        Stop
       </button>
     </h3>
     <div class="game" :class="{'visible': running}">
@@ -59,7 +62,7 @@ export default {
     bus.$on('stop', (data) => {
       if (data.gameName == this.gameName && data.context == this.context) {
         this.$store.dispatch('updateRunning', false)
-        this.stop()
+        this.clear()
       }
     })
     bus.$on('setTopics', (data) => {
@@ -96,6 +99,9 @@ export default {
     go() {
       bus.$emit('sendStart', {gameName: this.gameName, context: this.context})
     },
+    stop() {
+      bus.$emit('sendStop', {gameName: this.gameName, context: this.context})
+    },
     tick(t) {
       if (this.context == 'noSwitching' && t > 0 && t % 20 == 0) {
         const topic = this.active + 1
@@ -107,14 +113,19 @@ export default {
       bus.$emit('sendSetTopics', {gameName: this.gameName, context: this.context})
       this.setTopicActive(0, true)
     },
-    stop() {
+    clear() {
       this.time = 0
       for (let i = 0; i < this.topics.length; i++) {
         this.topics[i].active = false
       }
     },
     setNextTopic() {
-      const topic = Math.round(Math.random() * 2)
+      let topic = this.active
+      console.log(topic, this.active)
+      while (topic == this.active) {
+        topic = Math.round(Math.random() * 3)
+        console.log(topic, this.active)
+      }
       this.$store.dispatch('updateActiveTopic', {context: this.context, topic: topic})
     },
     enter() {

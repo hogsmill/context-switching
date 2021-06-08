@@ -66,8 +66,12 @@ function emit(event, data) {
   io.emit(event, data)
 }
 
+let running = false
 function start(data, t) {
-  if (t < 60) {
+  if (t == 0) {
+    running = true
+  }
+  if (running && t < 60) {
     emit('tick', {gameName: data.gameName, context: data.context, time: t})
     t = t + 1
     setTimeout(() => {
@@ -80,7 +84,8 @@ function start(data, t) {
 
 const topicsList = [
   'Red', 'Alive', 'Square', 'an Animal', 'a Place', 'Dead', 'an Insect', 'Cold', 'Wet', 'Big', 'Far Away',
-  'Green', 'Unpleasant', 'Smelly', 'Hot', 'a Food', 'a Drink', 'Expensive', 'Small', 'a Multiple of 3', 'Starts with A'
+  'Green', 'Unpleasant', 'Smelly', 'Hot', 'a Food', 'a Drink', 'Expensive', 'Small', 'a Multiple of 3', 'Starts with A',
+  'a Gadget', 'a TV Programme'
 ]
 
 function getTopics(data) {
@@ -115,6 +120,11 @@ io.on('connection', (socket) => {
     emit('start', data)
     getTopics(data)
     start(data, 0)
+  })
+
+  socket.on('sendStop', (data) => {
+    running = false
+    emit('stop', data)
   })
 
   socket.on('sendSetTopics', (data) => { getTopicsList(data) })
