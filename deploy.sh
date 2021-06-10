@@ -17,7 +17,7 @@ done
 REPO="https://github.com/hogsmill/context-switching.git"
 APPS=(
   'context-switching,contextSwitching,3003,Context Switching'
-  'context-switching-new,contextSwitchingNew,3032,Context Switching New'
+  'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching'
 )
 
 for ((i = 0; i < ${#APPS[@]}; i++))
