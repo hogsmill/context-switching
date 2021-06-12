@@ -17,6 +17,7 @@ done
 REPO="https://github.com/hogsmill/context-switching.git"
 APPS=(
   'context-switching,contextSwitching,3003,Context Switching,Context Switching'
+  'ba-shouting,baShouting,3033,BA Shouting,BA Shouting'
   'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching,Context Switching'
 )
 
@@ -25,18 +26,17 @@ do
   REC="${APPS[$i]}"
 
   APP=`echo $REC | cut -d, -f1`
-  GAMECOLLECTION=`echo $REC | cut -d, -f2`
-  COLLECTION=`echo $REC | cut -d, -f3`
-  PORT=`echo $REC | cut -d, -f4`
-  APPTYPE=`echo $REC | cut -d, -f5`
-  APPNAME=`echo $REC | cut -d, -f6`
-  PASSWORD=`echo $REC | cut -d, -f7`
+  COLLECTION=`echo $REC | cut -d, -f2`
+  PORT=`echo $REC | cut -d, -f3`
+  APPTYPE=`echo $REC | cut -d, -f4`
+  APPNAME=`echo $REC | cut -d, -f5`
+  PASSWORD=`echo $REC | cut -d, -f6`
 
   echo "------------------------------------------------"
   if [ -z "$APPNAME" ]; then
-    echo "Installing $APPTYPE:$APP ($GAMECOLLECTION, $COLLECTION, $PORT)"
+    echo "Installing $APPTYPE:$APP ($COLLECTION, $PORT)"
   else
-    echo "Installing $APPTYPE:$APP ($GAMECOLLECTION, $COLLECTION, $PORT, $APPNAME, $PASSWORD)"
+    echo "Installing $APPTYPE:$APP ($COLLECTION, $PORT, $APPNAME, $PASSWORD)"
   fi
   echo "------------------------------------------------"
 
@@ -48,7 +48,6 @@ do
   echo "VUE_APP_PORT=$PORT" > $ENVFILE
   echo "VUE_APP_TYPE=$APPTYPE" >> $ENVFILE
   echo "VUE_APP_COLLECTION=$COLLECTION" >> $ENVFILE
-  echo "VUE_APP_GAME_COLLECTION=$GAMECOLLECTION" >> $ENVFILE
   if [ ! -z "$APPNAME" ]; then
     echo "VUE_APP_NAME=$APPNAME" >> $ENVFILE
   fi
