@@ -66,12 +66,12 @@ function emit(event, data) {
   io.emit(event, data)
 }
 
-let running = false
+const running = {}
 function start(data, t) {
   if (t == 0) {
-    running = true
+    running[data.gameName] = true
   }
-  if (running && t < 60) {
+  if (running[data.gameName] && t < 60) {
     emit('tick', {gameName: data.gameName, context: data.context, time: t})
     t = t + 1
     setTimeout(() => {
@@ -116,6 +116,8 @@ io.on('connection', (socket) => {
 
   socket.on('sendSetContext', (data) => { emit('setContext', data) })
 
+  socket.on('sendMakeMeController', (data) => { emit('makeMeController', data) })
+
   socket.on('sendStart', (data) => {
     emit('start', data)
     getTopics(data)
@@ -123,7 +125,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('sendStop', (data) => {
-    running = false
+    running[data.gameName] = false
     emit('stop', data)
   })
 

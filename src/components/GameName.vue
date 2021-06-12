@@ -49,8 +49,8 @@ export default {
 
 <style lang="scss">
   .game-name {
-    width: 150px;
     display: inline-block;
+    margin: 2px 6px;
 
     button {
       font-size: smaller;

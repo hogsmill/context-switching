@@ -2,7 +2,7 @@
   <div class="col">
     <h3>
       {{ getTime() }}
-      <button id="go" :disabled="running || !context" class="btn btn-info" @click="go()">
+      <button id="go" :disabled="!controller || running || !context" class="btn btn-info" @click="go()">
         Go
       </button>
       <button id="stop" v-if="running" class="btn btn-info" @click="stop()">
@@ -38,6 +38,9 @@ export default {
     },
     context() {
       return this.$store.getters.getContext
+    },
+    controller() {
+      return this.$store.getters.getController
     },
     topics() {
       return this.$store.getters.getTopics
@@ -76,7 +79,6 @@ export default {
       }
     })
     bus.$on('addTopicValue', (data) => {
-      console.log(data)
       if (data.gameName == this.gameName && data.context == this.context) {
         this.$store.dispatch('addTopicValue', data)
       }
@@ -121,10 +123,8 @@ export default {
     },
     setNextTopic() {
       let topic = this.active
-      console.log(topic, this.active)
       while (topic == this.active) {
-        topic = Math.round(Math.random() * 3)
-        console.log(topic, this.active)
+        topic = Math.round(Math.random() * 2)
       }
       this.$store.dispatch('updateActiveTopic', {context: this.context, topic: topic})
     },

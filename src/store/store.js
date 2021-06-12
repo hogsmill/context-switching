@@ -10,10 +10,13 @@ function getContext(state, context) {
 export const store = new Vuex.Store({
   state: {
     thisGame: 'Context Switching',
+    connectionError: null,
+    localStorageStatus: true,
     showAbout: false,
     walkThrough: false,
     host: false,
     gameName: '',
+    controller: '',
     context: '',
     running: false,
     topics: 3,
@@ -39,6 +42,12 @@ export const store = new Vuex.Store({
     thisGame: (state) => {
       return state.thisGame
     },
+    getLocalStorageStatus: (state) => {
+      return state.localStorageStatus
+    },
+    getConnectionError: (state) => {
+      return state.connectionError
+    },
     getShowAbout: (state) => {
       return state.showAbout
     },
@@ -53,6 +62,9 @@ export const store = new Vuex.Store({
     },
     getContext: (state) => {
       return state.context
+    },
+    getController: (state) => {
+      return state.controller
     },
     getSwitchingItems: (state) => {
       return parseInt(
@@ -78,7 +90,6 @@ export const store = new Vuex.Store({
       return n
     },
     getTopics: (state) => {
-      console.log(state)
       return getContext(state, state.context).topics
     },
     getActiveTopic: (state) => {
@@ -95,6 +106,12 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
+    localStorageStatus: (state, payload) => {
+      state.localStorageStatus = payload
+    },
+    updateConnectionError: (state, payload) => {
+      state.connectionError = payload
+    },
     updateShowAbout: (state, payload) => {
       state.showAbout = payload
     },
@@ -107,9 +124,11 @@ export const store = new Vuex.Store({
     updateGameName: (state, payload) => {
       state.gameName = payload
     },
+    makeMeController: (state, payload) => {
+      state.controller = payload
+    },
     updateContext: (state, payload) => {
       state.context = payload.context
-      console.log(state)
     },
     updateRunning: (state, payload) => {
       state.running = payload
@@ -144,6 +163,12 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+    localStorageStatus: ({ commit }, payload) => {
+      commit('localStorageStatus', payload)
+    },
+    updateConnectionError: ({ commit }, payload) => {
+      commit('updateConnectionError', payload)
+    },
     updateShowAbout: ({ commit }, payload) => {
       commit('updateShowAbout', payload)
     },
@@ -155,6 +180,9 @@ export const store = new Vuex.Store({
     },
     updateGameName: ({ commit }, payload) => {
       commit('updateGameName', payload)
+    },
+    makeMeController: ({ commit }, payload) => {
+      commit('makeMeController', payload)
     },
     updateContext: ({ commit }, payload) => {
       commit('updateContext', payload)

@@ -26,6 +26,9 @@ export default {
     gameName() {
       return this.$store.getters.getGameName
     },
+    controller() {
+      return this.$store.getters.getController
+    },
     context() {
       return this.$store.getters.getContext
     },
@@ -47,7 +50,7 @@ export default {
       return this.game == 'switching' ? this.switchingItems : this.noSwitchingItems
     },
     setContext() {
-      if (!this.running) {
+      if (this.controller && !this.running) {
         bus.$emit('sendSetContext', {gameName: this.gameName, context: this.game})
       }
     }

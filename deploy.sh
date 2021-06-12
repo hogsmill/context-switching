@@ -16,8 +16,8 @@ done
 
 REPO="https://github.com/hogsmill/context-switching.git"
 APPS=(
-  'context-switching,contextSwitching,3003,Context Switching'
-  'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching'
+  'context-switching,contextSwitching,3003,Context Switching,Context Switching'
+  'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching,Context Switching'
 )
 
 for ((i = 0; i < ${#APPS[@]}; i++))
@@ -25,16 +25,18 @@ do
   REC="${APPS[$i]}"
 
   APP=`echo $REC | cut -d, -f1`
-  COLLECTION=`echo $REC | cut -d, -f2`
-  PORT=`echo $REC | cut -d, -f3`
-  APPNAME=`echo $REC | cut -d, -f4`
-  PASSWORD=`echo $REC | cut -d, -f5`
+  GAMECOLLECTION=`echo $REC | cut -d, -f2`
+  COLLECTION=`echo $REC | cut -d, -f3`
+  PORT=`echo $REC | cut -d, -f4`
+  APPTYPE=`echo $REC | cut -d, -f5`
+  APPNAME=`echo $REC | cut -d, -f6`
+  PASSWORD=`echo $REC | cut -d, -f7`
 
   echo "------------------------------------------------"
   if [ -z "$APPNAME" ]; then
-    echo "Installing $APP ($COLLECTION, $PORT)"
+    echo "Installing $APPTYPE:$APP ($GAMECOLLECTION, $COLLECTION, $PORT)"
   else
-    echo "Installing $APP ($COLLECTION, $PORT, $APPNAME, $PASSWORD)"
+    echo "Installing $APPTYPE:$APP ($GAMECOLLECTION, $COLLECTION, $PORT, $APPNAME, $PASSWORD)"
   fi
   echo "------------------------------------------------"
 
@@ -44,7 +46,9 @@ do
   fi
   ENVFILE="$DIR/.env"
   echo "VUE_APP_PORT=$PORT" > $ENVFILE
+  echo "VUE_APP_TYPE=$APPTYPE" >> $ENVFILE
   echo "VUE_APP_COLLECTION=$COLLECTION" >> $ENVFILE
+  echo "VUE_APP_GAME_COLLECTION=$GAMECOLLECTION" >> $ENVFILE
   if [ ! -z "$APPNAME" ]; then
     echo "VUE_APP_NAME=$APPNAME" >> $ENVFILE
   fi
@@ -63,7 +67,7 @@ do
     exit 0
   fi
 
-  npm install
+  npm install --legacy-peer-deps
   npm run build
   if [ ! -d /var/www/html/$APP/ ]; then
     mkdir /var/www/html/$APP

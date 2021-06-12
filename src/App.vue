@@ -1,14 +1,19 @@
 <template>
   <div id="app" class="mb-4">
     <appHeader />
+    <ConnectionError />
     <GameName />
+    <Controller />
     <WalkThroughView />
     <div v-if="showAbout">
       <AboutView />
     </div>
     <div v-if="!showAbout && !gameName" class="plates" />
     <div v-if="!showAbout && gameName">
-      <h1>Game: {{ gameName }} <i class="fas fa-undo" @click="restart()" /></h1>
+      <h1>
+        Game: {{ gameName }}
+        <i v-if="controller" class="fas fa-brain" />
+        <i class="fas fa-undo" @click="restart()" /></h1>
       <div class="container">
         <div v-if="gameName" class="context">
           <div>
@@ -29,13 +34,16 @@ import bus from './socket.js'
 
 import io from 'socket.io-client'
 
+import ls from './lib/localStorage.js'
 import params from './lib/params.js'
 
 import Header from './components/Header.vue'
 import AboutView from './components/about/AboutView.vue'
 import WalkThroughView from './components/about/WalkThroughView.vue'
+import ConnectionError from './components/error/ConnectionError.vue'
 
 import GameName from './components/GameName.vue'
+import Controller from './components/Controller.vue'
 import Control from './components/Control.vue'
 import Panel from './components/Panel.vue'
 
@@ -45,7 +53,9 @@ export default {
     appHeader: Header,
     AboutView,
     WalkThroughView,
+    ConnectionError,
     GameName,
+    Controller,
     Control,
     Panel
   },
@@ -58,6 +68,9 @@ export default {
     },
     gameName() {
       return this.$store.getters.getGameName
+    },
+    controller() {
+      return this.$store.getters.getController
     },
     context() {
       return this.$store.getters.getContext
@@ -72,7 +85,14 @@ export default {
       return this.$store.getters.getRunning
     }
   },
-  mounted() {
+  created() {
+    bus.$on('connectionError', (data) => {
+      this.$store.dispatch('updateConnectionError', data)
+    })
+
+    this.$store.dispatch('localStorageStatus', ls.check())
+    ls.fix()
+
     if (params.isParam('host')) {
       this.$store.dispatch('updateHost', true)
     }
@@ -83,6 +103,12 @@ export default {
     bus.$on('setContext', (data) => {
       if (data.gameName == this.gameName) {
         this.$store.dispatch('updateContext', data)
+      }
+    })
+
+    bus.$on('makeMeController', (data) => {
+      if (data.gameName == this.gameName && this.controller != data.id) {
+        this.$store.dispatch('makeMeController', '')
       }
     })
   },
@@ -114,6 +140,12 @@ export default {
     margin-bottom: 24px;
   }
 
+  .fa-brain {
+    margin-right: 36px;
+    color: darksalmon;
+    display: inline-block;
+    text-shadow: 1px 1px 1px #888;
+  }
   .fa-undo {
     font-size: smaller;
     color: #888;

@@ -19,6 +19,8 @@ socket.on('updateConnections', (data) => { bus.$emit('updateConnections', data) 
 
 bus.$on('sendSetContext', (data) => { socket.emit('sendSetContext', data) })
 
+bus.$on('sendMakeMeController', (data) => { socket.emit('sendMakeMeController', data) })
+
 bus.$on('sendStart', (data) => { socket.emit('sendStart', data) })
 
 bus.$on('sendStop', (data) => { socket.emit('sendStop', data) })
@@ -28,6 +30,8 @@ bus.$on('sendAddTopicValue', (data) => { socket.emit('sendAddTopicValue', data) 
 // Receive
 
 socket.on('setContext', (data) => { bus.$emit('setContext', data) })
+
+socket.on('makeMeController', (data) => { bus.$emit('makeMeController', data) })
 
 socket.on('contexts', (data) => { bus.$emit('contexts', data) })
 

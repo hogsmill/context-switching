@@ -175,8 +175,8 @@ export default {
 
 <style lang="scss">
   .explain {
-    width: 150px;
     display: inline-block;
+    margin: 2px 6px;
   }
 
   .buttons {
