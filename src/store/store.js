@@ -10,6 +10,7 @@ function getContext(state, context) {
 export const store = new Vuex.Store({
   state: {
     thisGame: 'Context Switching',
+    appType: 'Context Switching',
     connectionError: null,
     localStorageStatus: true,
     showAbout: false,
@@ -41,6 +42,9 @@ export const store = new Vuex.Store({
   getters: {
     thisGame: (state) => {
       return state.thisGame
+    },
+    appType: (state) => {
+      return state.appType
     },
     getLocalStorageStatus: (state) => {
       return state.localStorageStatus
@@ -106,6 +110,10 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
+    updateAppType: (state, payload) => {
+      state.appType = payload
+      state.thisGame = payload
+    },
     localStorageStatus: (state, payload) => {
       state.localStorageStatus = payload
     },
@@ -163,6 +171,9 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
+    updateAppType: ({ commit }, payload) => {
+      commit('updateAppType', payload)
+    },
     localStorageStatus: ({ commit }, payload) => {
       commit('localStorageStatus', payload)
     },

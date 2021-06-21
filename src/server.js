@@ -9,6 +9,7 @@ const os = require('os')
 const prod = os.hostname() == 'agilesimulations' ? true : false
 const logFile = prod ? process.argv[4] : 'server.log'
 const port = prod ? process.env.VUE_APP_PORT : 3003
+const gameCollection =  prod ? process.env.VUE_APP_COLLECTION : 'contextSwitching'
 
 ON_DEATH(function(signal, err) {
   let logStr = new Date()
@@ -53,19 +54,6 @@ if (!prod) {
   })
 }
 
-const connectDebugOff = prod
-const debugOn = !prod
-
-let connections = 0
-const maxConnections = 10
-
-function emit(event, data) {
-  if (debugOn) {
-    console.log(event, data)
-  }
-  io.emit(event, data)
-}
-
 const running = {}
 function start(data, t) {
   if (t == 0) {
@@ -100,38 +88,69 @@ function getTopics(data) {
   emit('setTopics', data)
 }
 
-io.on('connection', (socket) => {
-  connections = connections + 1
-  if (connections > maxConnections) {
-    console.log(`Too many connections. Socket ${socket.id} closed`)
-    socket.disconnect(0)
-  } else {
-    connectDebugOff || console.log(`A user connected with socket id ${socket.id}. (${connections} connections)`)
+const MongoClient = require('mongodb').MongoClient
+
+const url = prod ?  'mongodb://127.0.0.1:27017/' : 'mongodb://localhost:27017/'
+const maxIdleTime = 7200000
+const connectDebugOff = prod
+const debugOn = !prod
+
+const connections = {}
+const maxConnections = 2000
+
+const emit = (event, data) => {
+  if (debugOn) {
+    console.log(event, data, '(emit)')
   }
+  io.emit(event, data)
+}
 
-  socket.on('disconnect', () => {
-    connections = connections - 1
-    connectDebugOff || console.log(`User with socket id ${socket.id} has disconnected. (${connections} connections)`)
+let db
+MongoClient.connect(url, { useUnifiedTopology: true, maxIdleTimeMS: maxIdleTime }, (err, client) => {
+  if (err) throw err
+  db = client.db('db')
+
+  db.createCollection(gameCollection, function(error, collection) {})
+
+  db.gameCollection = db.collection(gameCollection)
+
+  io.on('connection', (socket) => {
+    const connection = socket.handshake.headers.host
+    connections[connection] = connections[connection] ? connections[connection] + 1 : 1
+    if (Object.keys(connections).length > maxConnections || connections[connection] > maxConnections) {
+      console.log(`Too many connections. Socket ${socket.id} closed`)
+      socket.disconnect(0)
+    } else {
+      connectDebugOff || console.log(`A user connected with socket id ${socket.id} from ${connection} - ${connections[connection]} connections. (${Object.keys(connections).length} clients)`)
+      emit('updateConnections', {connections: connections, maxConnections: maxConnections})
+    }
+
+    socket.on('disconnect', () => {
+      const connection = socket.handshake.headers.host
+      connections[connection] = connections[connection] - 1
+      connectDebugOff || console.log(`User with socket id ${socket.id} has disconnected.`)
+      emit('updateConnections', {connections: connections, maxConnections: maxConnections})
+    })
+
+    socket.on('sendSetContext', (data) => { emit('setContext', data) })
+
+    socket.on('sendMakeMeController', (data) => { emit('makeMeController', data) })
+
+    socket.on('sendStart', (data) => {
+      emit('start', data)
+      getTopics(data)
+      start(data, 0)
+    })
+
+    socket.on('sendStop', (data) => {
+      running[data.gameName] = false
+      emit('stop', data)
+    })
+
+    socket.on('sendSetTopics', (data) => { getTopicsList(data) })
+
+    socket.on('sendAddTopicValue', (data) => { emit('addTopicValue', data) })
   })
-
-  socket.on('sendSetContext', (data) => { emit('setContext', data) })
-
-  socket.on('sendMakeMeController', (data) => { emit('makeMeController', data) })
-
-  socket.on('sendStart', (data) => {
-    emit('start', data)
-    getTopics(data)
-    start(data, 0)
-  })
-
-  socket.on('sendStop', (data) => {
-    running[data.gameName] = false
-    emit('stop', data)
-  })
-
-  socket.on('sendSetTopics', (data) => { getTopicsList(data) })
-
-  socket.on('sendAddTopicValue', (data) => { emit('addTopicValue', data) })
 })
 
 httpServer.listen(port, () => {

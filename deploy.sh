@@ -17,7 +17,7 @@ done
 REPO="https://github.com/hogsmill/context-switching.git"
 APPS=(
   'context-switching,contextSwitching,3003,Context Switching,Context Switching'
-  'ba-shouting,baShouting,3033,BA Shouting,BA Shouting'
+  'requirements-game,requirement,3033,Requirements Game,Requirements Game'
   'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching,Context Switching'
 )
 

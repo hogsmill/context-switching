@@ -2,6 +2,7 @@
   <div id="app" class="mb-4">
     <appHeader />
     <ConnectionError />
+    {{ appType }}
     <GameName />
     <Controller />
     <WalkThroughView />
@@ -13,7 +14,8 @@
       <h1>
         Game: {{ gameName }}
         <i v-if="controller" class="fas fa-brain" />
-        <i class="fas fa-undo" @click="restart()" /></h1>
+        <i class="fas fa-undo" @click="restart()" />
+      </h1>
       <div class="container">
         <div v-if="gameName" class="context">
           <div>
@@ -36,6 +38,7 @@ import io from 'socket.io-client'
 
 import ls from './lib/localStorage.js'
 import params from './lib/params.js'
+import appTypeFuns from './lib/appType.js'
 
 import Header from './components/Header.vue'
 import AboutView from './components/about/AboutView.vue'
@@ -62,6 +65,9 @@ export default {
   computed: {
     isHost() {
       return this.$store.getters.getHost
+    },
+    appType() {
+      return this.$store.getters.appType
     },
     showAbout() {
       return this.$store.getters.getShowAbout
@@ -92,6 +98,9 @@ export default {
 
     this.$store.dispatch('localStorageStatus', ls.check())
     ls.fix()
+
+    const appType = appTypeFuns.get()
+    this.$store.dispatch('updateAppType', appType)
 
     if (params.isParam('host')) {
       this.$store.dispatch('updateHost', true)
