@@ -19,22 +19,11 @@ const LocalStorage = {
     return check
   },
 
-  fix: function() {
-
-    // TODO: this should only be temp
-    //
-    const items = [
-      'gameName',
-      'teamName',
-      'myName',
-      'myRole'
-    ]
-    for (let i = 0; i < items.length; i++) {
-      const key = items[i]
-      if (localStorage.getItem(key)) {
-        const val = localStorage.getItem(key)
-        localStorage.setItem(key + '-ne', val)
-        localStorage.removeItem(key)
+  clear: function(suffix) {
+    const expr = new RegExp('-' + suffix + '$')
+    for (let i = 0; i < localStorage.length; i++) {
+      if (localStorage.key(i).match(expr)) {
+        console.log('deleting', localStorage.key(i))
       }
     }
   }

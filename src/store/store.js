@@ -43,6 +43,10 @@ export const store = new Vuex.Store({
     thisGame: (state) => {
       return state.thisGame
     },
+    lsSuffix: (state) => {
+      // TODO: Switch on appType a la No Estimates
+      return 'cs'
+    },
     appType: (state) => {
       return state.appType
     },

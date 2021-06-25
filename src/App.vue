@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="mb-4">
     <appHeader />
+    <ClearStorage />
     <ConnectionError />
     {{ appType }}
     <GameName />
@@ -41,6 +42,7 @@ import params from './lib/params.js'
 import appTypeFuns from './lib/appType.js'
 
 import Header from './components/Header.vue'
+import ClearStorage from './components/ClearStorage.vue'
 import AboutView from './components/about/AboutView.vue'
 import WalkThroughView from './components/about/WalkThroughView.vue'
 import ConnectionError from './components/error/ConnectionError.vue'
@@ -54,6 +56,7 @@ export default {
   name: 'App',
   components: {
     appHeader: Header,
+    ClearStorage,
     AboutView,
     WalkThroughView,
     ConnectionError,
@@ -97,7 +100,6 @@ export default {
     })
 
     this.$store.dispatch('localStorageStatus', ls.check())
-    ls.fix()
 
     const appType = appTypeFuns.get()
     this.$store.dispatch('updateAppType', appType)
