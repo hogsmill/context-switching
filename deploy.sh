@@ -30,13 +30,12 @@ do
   PORT=`echo $REC | cut -d, -f3`
   APPTYPE=`echo $REC | cut -d, -f4`
   APPNAME=`echo $REC | cut -d, -f5`
-  PASSWORD=`echo $REC | cut -d, -f6`
 
   echo "------------------------------------------------"
   if [ -z "$APPNAME" ]; then
     echo "Installing $APPTYPE:$APP ($COLLECTION, $PORT)"
   else
-    echo "Installing $APPTYPE:$APP ($COLLECTION, $PORT, $APPNAME, $PASSWORD)"
+    echo "Installing $APPTYPE:$APP ($COLLECTION, $PORT, $APPNAME)"
   fi
   echo "------------------------------------------------"
 
@@ -50,9 +49,6 @@ do
   echo "VUE_APP_COLLECTION=$COLLECTION" >> $ENVFILE
   if [ ! -z "$APPNAME" ]; then
     echo "VUE_APP_NAME=$APPNAME" >> $ENVFILE
-  fi
-  if [ ! -z $PASSWORD ]; then
-    echo "VUE_APP_PASSWORD=$PASSWORD" >> $ENVFILE
   fi
 
   cd $DIR
