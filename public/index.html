@@ -13,6 +13,15 @@
     />
     <script src="https://kit.fontawesome.com/50eff791d6.js" crossorigin="anonymous"></script>
     <title>Context Switching | Agile Simulations</title>
+    <script>
+      let title = 'Context Switching (Local)'
+      if (document.location.pathname.match(/context-switching/)) {
+        title = 'Context Switching'
+      } else if (document.location.pathname.match(/requirements-game/)) {
+        title = 'BA Shouting'
+      }
+      document.getElementsByTagName('title')[0].innerHTML = title + ' | Agile Simulations'
+  </script>
   </head>
   <body>
     <div id="app"></div>
