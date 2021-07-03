@@ -101,7 +101,7 @@ export default {
 
     this.$store.dispatch('localStorageStatus', ls.check())
 
-    const appType = appTypeFuns.get()
+    const appType = appTypeFuns.get('Context Switching')
     this.$store.dispatch('updateAppType', appType)
 
     if (params.isParam('host')) {
