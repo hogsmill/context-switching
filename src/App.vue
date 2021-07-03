@@ -3,7 +3,6 @@
     <appHeader />
     <ClearStorage />
     <ConnectionError />
-    {{ appType }}
     <GameName />
     <Controller />
     <WalkThroughView />
