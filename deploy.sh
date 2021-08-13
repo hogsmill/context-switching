@@ -19,6 +19,8 @@ APPS=(
   'context-switching,contextSwitching,3003,Context Switching,Context Switching'
   'requirements-game,requirement,3033,Requirements Game,Requirements Game'
   'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching,Context Switching'
+  'context-switching-ratesetter,contextSwitchingRateSetter,3063,Context Switching,Context Switching'
+  'context-switching-eagile,contextSwitchingEverydayAgile,3072,Context Switching,Context Switching'
 )
 
 for ((i = 0; i < ${#APPS[@]}; i++))
