@@ -15,6 +15,7 @@ do
 done
 
 REPO="https://github.com/hogsmill/context-switching.git"
+MAINAPP="context-switching"
 APPS=(
   'context-switching,contextSwitching,3003,Context Switching,Context Switching'
   'requirements-game,requirement,3033,Requirements Game,Requirements Game'
@@ -89,8 +90,13 @@ do
       kill -9 $SERVER
     fi
   fi
-  rm -rf $DIR/node_modules/.cache
-  rm -rf $DIR/dist
+  if [ $i == 0 ]; then
+      rm -rf $DIR/node_modules/.cache
+    else
+      rm -rf node_modules
+      ln -s ../$MAINAPP/node_modules node_modules
+    fi
+    rm -rf $DIR/dist
 done
 
 ps -ef | grep php | grep outdated
