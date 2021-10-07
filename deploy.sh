@@ -22,6 +22,7 @@ APPS=(
   'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching,Context Switching'
   'context-switching-ratesetter,contextSwitchingRateSetter,3063,Context Switching,Context Switching'
   'context-switching-eagile,contextSwitchingEverydayAgile,3072,Context Switching,Context Switching'
+  'context-switching-and,contextSwitchingAnd,3111,Context Switching,Context Switching'
 )
 
 for ((i = 0; i < ${#APPS[@]}; i++))
