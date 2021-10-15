@@ -14,26 +14,57 @@ do
   shift
 done
 
+BASEPORT=4250
 REPO="https://github.com/hogsmill/context-switching.git"
 MAINAPP="context-switching"
-APPS=(
-  'context-switching,contextSwitching,3003,Context Switching,Context Switching'
-  'requirements-game,requirement,3033,Requirements Game,Requirements Game'
-  'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching,Context Switching'
-  'context-switching-ratesetter,contextSwitchingRateSetter,3063,Context Switching,Context Switching'
-  'context-switching-eagile,contextSwitchingEverydayAgile,3072,Context Switching,Context Switching'
-  'context-switching-and,contextSwitchingAnd,3111,Context Switching,Context Switching'
+MAINCOLLECTION="contextSwitching"
+MAINNAME="Context Switching"
+ROUTESCONTEXT=(
+  '',''
+  'new','New'
+  'guardian','Guardian'
+  'ratesetter','RateSetter'
+  'eagile','EverydayAgile'
+  'and','And'
 )
 
-for ((i = 0; i < ${#APPS[@]}; i++))
+for ((i = 0; i < ${#ROUTES[@]}; i++))
 do
-  REC="${APPS[$i]}"
+  REC="${ROUTES[$i]}"
+  ROUTE=`echo $REC | cut -d, -f1`
+  COLLECTIONSUFFIX=`echo $REC | cut -d, -f2`
 
-  APP=`echo $REC | cut -d, -f1`
-  COLLECTION=`echo $REC | cut -d, -f2`
-  PORT=`echo $REC | cut -d, -f3`
-  APPTYPE=`echo $REC | cut -d, -f4`
-  APPNAME=`echo $REC | cut -d, -f5`
+  APP=$MAINAPP
+  if [ "$ROUTE" != "" ]; then
+    APP="${APP}-${ROUTE}"
+  fi
+  COLLECTION=$MAINCOLLECTION
+  if [ "$COLLECTIONSUFFIX" != "" ]; then
+    COLLECTION="${COLLECTION}${COLLECTIONSUFFIX}"
+  fi
+  APPNAME=$MAINNAME
+  let PORT=$BASEPORT+$i
+
+#REPO="https://github.com/hogsmill/context-switching.git"
+#MAINAPP="context-switching"
+#APPS=(
+#  'context-switching,contextSwitching,3003,Context Switching,Context Switching'
+#  'requirements-game,requirement,3033,Requirements Game,Requirements Game'
+#  'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching,Context Switching'
+#  'context-switching-ratesetter,contextSwitchingRateSetter,3063,Context Switching,Context Switching'
+#  'context-switching-eagile,contextSwitchingEverydayAgile,3072,Context Switching,Context Switching'
+#  'context-switching-and,contextSwitchingAnd,3111,Context Switching,Context Switching'
+#)
+#
+#for ((i = 0; i < ${#APPS[@]}; i++))
+#do
+#  REC="${APPS[$i]}"
+#
+#  APP=`echo $REC | cut -d, -f1`
+#  COLLECTION=`echo $REC | cut -d, -f2`
+#  PORT=`echo $REC | cut -d, -f3`
+#  APPTYPE=`echo $REC | cut -d, -f4`
+#  APPNAME=`echo $REC | cut -d, -f5`
 
   echo "------------------------------------------------"
   if [ -z "$APPNAME" ]; then
