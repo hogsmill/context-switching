@@ -19,6 +19,9 @@ REPO="https://github.com/hogsmill/context-switching.git"
 MAINCONTEXTAPP="context-switching"
 MAINCONTEXTCOLLECTION="contextSwitching"
 MAINCONTEXTNAME="Context Switching"
+MAINREQUIREMENTSAPP="requirements-game"
+MAINCONTEXTCOLLECTION="requirements"
+MAINCONTEXTNAME="Requirements Game"
 ROUTES=(
   '','','Context Switching'
   'new','New','Context Switching'
@@ -26,6 +29,7 @@ ROUTES=(
   'ratesetter','RateSetter','Context Switching'
   'eagile','EverydayAgile','Context Switching'
   'and','And','Context Switching'
+  '','','Requirements Game'
 )
 
 for ((i = 0; i < ${#ROUTES[@]}; i++))
@@ -40,6 +44,13 @@ do
     APP=$MAINCONTEXTAPP
     COLLECTION=$MAINCONTEXTCOLLECTION
     APPNAME=$MAINCONTEXTNAME
+  fi
+
+  if [ "$APPTYPE" == "Requirements Game" ]; then
+    BASEAPP=$MAINREQUIREMENTSAPP
+    APP=$MAINREQUIREMENTSAPP
+    COLLECTION=$MAINREQUIREMENTSCOLLECTION
+    APPNAME=$MAINREQUIREMENTSNAME
   fi
 
   if [ "$ROUTE" != "" ]; then
