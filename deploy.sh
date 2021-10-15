@@ -16,16 +16,17 @@ done
 
 BASEPORT=4250
 REPO="https://github.com/hogsmill/context-switching.git"
-MAINAPP="context-switching"
-MAINCOLLECTION="contextSwitching"
-MAINNAME="Context Switching"
-ROUTESCONTEXT=(
-  '',''
-  'new','New'
-  'guardian','Guardian'
-  'ratesetter','RateSetter'
-  'eagile','EverydayAgile'
-  'and','And'
+MAINCONTEXTAPP="context-switching"
+MAINCONTEXTCOLLECTION="contextSwitching"
+MAINCONTEXTCOLLECTION="contextSwitching"
+MAINCONTEXTNAME="Context Switching"
+ROUTES=(
+  '','','context-switching'
+  'new','New','context-switching'
+  'guardian','Guardian','context-switching'
+  'ratesetter','RateSetter','context-switching'
+  'eagile','EverydayAgile','context-switching'
+  'and','And','context-switching'
 )
 
 for ((i = 0; i < ${#ROUTES[@]}; i++))
@@ -33,12 +34,16 @@ do
   REC="${ROUTES[$i]}"
   ROUTE=`echo $REC | cut -d, -f1`
   COLLECTIONSUFFIX=`echo $REC | cut -d, -f2`
+  APPTYPE=`echo $REC | cut -d, -f3`
 
-  APP=$MAINAPP
+  if [ "$APPTYPE" == 'context-switching']
+    APP=$MAINCONTEXTAPP
+    COLLECTION=$MAINCONTEXTCOLLECTION
+  fi
+
   if [ "$ROUTE" != "" ]; then
     APP="${APP}-${ROUTE}"
   fi
-  COLLECTION=$MAINCOLLECTION
   if [ "$COLLECTIONSUFFIX" != "" ]; then
     COLLECTION="${COLLECTION}${COLLECTIONSUFFIX}"
   fi
