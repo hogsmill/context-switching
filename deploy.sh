@@ -20,12 +20,12 @@ MAINCONTEXTAPP="context-switching"
 MAINCONTEXTCOLLECTION="contextSwitching"
 MAINCONTEXTNAME="Context Switching"
 ROUTES=(
-  '','','context-switching'
-  'new','New','context-switching'
-  'guardian','Guardian','context-switching'
-  'ratesetter','RateSetter','context-switching'
-  'eagile','EverydayAgile','context-switching'
-  'and','And','context-switching'
+  '','','Context Switching'
+  'new','New','Context Switching'
+  'guardian','Guardian','Context Switching'
+  'ratesetter','RateSetter','Context Switching'
+  'eagile','EverydayAgile','Context Switching'
+  'and','And','Context Switching'
 )
 
 for ((i = 0; i < ${#ROUTES[@]}; i++))
@@ -35,7 +35,7 @@ do
   COLLECTIONSUFFIX=`echo $REC | cut -d, -f2`
   APPTYPE=`echo $REC | cut -d, -f3`
 
-  if [ "$APPTYPE" == "context-switching" ]; then
+  if [ "$APPTYPE" == "Context Switching" ]; then
     APP=$MAINCONTEXTAPP
     COLLECTION=$MAINCONTEXTCOLLECTION
     APPNAME=$MAINCONTEXTNAME
