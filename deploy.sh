@@ -16,6 +16,7 @@ done
 
 BASEPORT=4250
 REPO="https://github.com/hogsmill/context-switching.git"
+BASEAPP="context-switching"
 MAINCONTEXTAPP="context-switching"
 MAINCONTEXTCOLLECTION="contextSwitching"
 MAINCONTEXTNAME="Context Switching"
@@ -40,14 +41,12 @@ do
   APPTYPE=`echo $REC | cut -d, -f3`
 
   if [ "$APPTYPE" == "Context Switching" ]; then
-    BASEAPP=$MAINCONTEXTAPP
     APP=$MAINCONTEXTAPP
     COLLECTION=$MAINCONTEXTCOLLECTION
     APPNAME=$MAINCONTEXTNAME
   fi
 
   if [ "$APPTYPE" == "Requirements Game" ]; then
-    BASEAPP=$MAINREQUIREMENTSAPP
     APP=$MAINREQUIREMENTSAPP
     COLLECTION=$MAINREQUIREMENTSCOLLECTION
     APPNAME=$MAINREQUIREMENTSNAME
