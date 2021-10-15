@@ -18,7 +18,6 @@ BASEPORT=4250
 REPO="https://github.com/hogsmill/context-switching.git"
 MAINCONTEXTAPP="context-switching"
 MAINCONTEXTCOLLECTION="contextSwitching"
-MAINCONTEXTCOLLECTION="contextSwitching"
 MAINCONTEXTNAME="Context Switching"
 ROUTES=(
   '','','context-switching'
@@ -36,9 +35,10 @@ do
   COLLECTIONSUFFIX=`echo $REC | cut -d, -f2`
   APPTYPE=`echo $REC | cut -d, -f3`
 
-  if [ "$APPTYPE" == 'context-switching']; then
+  if [ "$APPTYPE" == "context-switching" ]; then
     APP=$MAINCONTEXTAPP
     COLLECTION=$MAINCONTEXTCOLLECTION
+    APPNAME=$MAINCONTEXTNAME
   fi
 
   if [ "$ROUTE" != "" ]; then
@@ -47,7 +47,6 @@ do
   if [ "$COLLECTIONSUFFIX" != "" ]; then
     COLLECTION="${COLLECTION}${COLLECTIONSUFFIX}"
   fi
-  APPNAME=$MAINNAME
   let PORT=$BASEPORT+$i
 
 #REPO="https://github.com/hogsmill/context-switching.git"
