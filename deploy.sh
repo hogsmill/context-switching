@@ -36,7 +36,7 @@ do
   COLLECTIONSUFFIX=`echo $REC | cut -d, -f2`
   APPTYPE=`echo $REC | cut -d, -f3`
 
-  if [ "$APPTYPE" == 'context-switching']
+  if [ "$APPTYPE" == 'context-switching']; then
     APP=$MAINCONTEXTAPP
     COLLECTION=$MAINCONTEXTCOLLECTION
   fi
