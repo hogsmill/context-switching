@@ -36,6 +36,7 @@ do
   APPTYPE=`echo $REC | cut -d, -f3`
 
   if [ "$APPTYPE" == "Context Switching" ]; then
+    BASEAPP=$MAINCONTEXTAPP
     APP=$MAINCONTEXTAPP
     COLLECTION=$MAINCONTEXTCOLLECTION
     APPNAME=$MAINCONTEXTNAME
@@ -48,27 +49,6 @@ do
     COLLECTION="${COLLECTION}${COLLECTIONSUFFIX}"
   fi
   let PORT=$BASEPORT+$i
-
-#REPO="https://github.com/hogsmill/context-switching.git"
-#MAINAPP="context-switching"
-#APPS=(
-#  'context-switching,contextSwitching,3003,Context Switching,Context Switching'
-#  'requirements-game,requirement,3033,Requirements Game,Requirements Game'
-#  'context-switching-guardian,contextSwitchingGuardian,3032,Context Switching,Context Switching'
-#  'context-switching-ratesetter,contextSwitchingRateSetter,3063,Context Switching,Context Switching'
-#  'context-switching-eagile,contextSwitchingEverydayAgile,3072,Context Switching,Context Switching'
-#  'context-switching-and,contextSwitchingAnd,3111,Context Switching,Context Switching'
-#)
-#
-#for ((i = 0; i < ${#APPS[@]}; i++))
-#do
-#  REC="${APPS[$i]}"
-#
-#  APP=`echo $REC | cut -d, -f1`
-#  COLLECTION=`echo $REC | cut -d, -f2`
-#  PORT=`echo $REC | cut -d, -f3`
-#  APPTYPE=`echo $REC | cut -d, -f4`
-#  APPNAME=`echo $REC | cut -d, -f5`
 
   echo "------------------------------------------------"
   if [ -z "$APPNAME" ]; then
@@ -130,7 +110,7 @@ do
       rm -rf $DIR/node_modules/.cache
     else
       rm -rf node_modules
-      ln -s ../$MAINAPP/node_modules node_modules
+      ln -s ../$BASEAPP/node_modules node_modules
     fi
     rm -rf $DIR/dist
 done
