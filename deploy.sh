@@ -21,8 +21,8 @@ MAINCONTEXTAPP="context-switching"
 MAINCONTEXTCOLLECTION="contextSwitching"
 MAINCONTEXTNAME="Context Switching"
 MAINREQUIREMENTSAPP="requirements-game"
-MAINCONTEXTCOLLECTION="requirements"
-MAINCONTEXTNAME="Requirements Game"
+MAINREQUIREMENTSCOLLECTION="requirements"
+MAINREQUIREMENTSNAME="Requirements Game"
 ROUTES=(
   '','','Context Switching'
   'new','New','Context Switching'
