@@ -30,6 +30,7 @@ ROUTES=(
   'ratesetter','RateSetter','Context Switching'
   'eagile','EverydayAgile','Context Switching'
   'and','And','Context Switching'
+  'richemont','Richemont'
   '','','Requirements Game'
 )
 
