@@ -31,6 +31,7 @@ ROUTES=(
   'eagile','EverydayAgile','Context Switching'
   'and','And','Context Switching'
   'richemont','Richemont','Context Switching'
+  'bud','Bud','Context Switching'
   '','','Requirements Game'
 )
 
