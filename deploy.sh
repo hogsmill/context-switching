@@ -32,7 +32,7 @@ ROUTES=(
   'and','And','Context Switching'
   'richemont','Richemont','Context Switching'
   'bud','Bud','Context Switching'
-  'matt-phillip','Matt Phillip','Context Switching'
+  'mattphillip','MattPhillip','Context Switching'
   '','','Requirements Game'
 )
 
