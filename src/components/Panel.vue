@@ -56,29 +56,29 @@ export default {
     }
   },
   mounted() {
-    bus.$on('start', (data) => {
+    bus.on('start', (data) => {
       if (data.gameName == this.gameName && data.context == this.context) {
         this.$store.dispatch('updateRunning', true)
         this.start()
       }
     })
-    bus.$on('stop', (data) => {
+    bus.on('stop', (data) => {
       if (data.gameName == this.gameName && data.context == this.context) {
         this.$store.dispatch('updateRunning', false)
         this.clear()
       }
     })
-    bus.$on('setTopics', (data) => {
+    bus.on('setTopics', (data) => {
       if (data.gameName == this.gameName && data.context == this.context) {
         this.$store.dispatch('updateTopics', data)
       }
     })
-    bus.$on('tick', (data) => {
+    bus.on('tick', (data) => {
       if (data.gameName == this.gameName && data.context == this.context) {
         this.tick(data.time)
       }
     })
-    bus.$on('addTopicValue', (data) => {
+    bus.on('addTopicValue', (data) => {
       if (data.gameName == this.gameName && data.context == this.context) {
         this.$store.dispatch('addTopicValue', data)
       }
@@ -99,10 +99,10 @@ export default {
       }
     },
     go() {
-      bus.$emit('sendStart', {gameName: this.gameName, context: this.context})
+      bus.emit('sendStart', {gameName: this.gameName, context: this.context})
     },
     stop() {
-      bus.$emit('sendStop', {gameName: this.gameName, context: this.context})
+      bus.emit('sendStop', {gameName: this.gameName, context: this.context})
     },
     tick(t) {
       if (this.context == 'noSwitching' && t > 0 && t % 20 == 0) {
@@ -112,7 +112,7 @@ export default {
       this.time = t
     },
     start() {
-      bus.$emit('sendSetTopics', {gameName: this.gameName, context: this.context})
+      bus.emit('sendSetTopics', {gameName: this.gameName, context: this.context})
       this.setTopicActive(0, true)
     },
     clear() {
@@ -134,7 +134,7 @@ export default {
       if (!this.checkTopicValue(value)) {
         alert(value + ' already exists')
       } else {
-        bus.$emit('sendAddTopicValue', {gameName: this.gameName, context: this.context, topic: this.active, value: value})
+        bus.emit('sendAddTopicValue', {gameName: this.gameName, context: this.context, topic: this.active, value: value})
       }
       input.value = ''
       if (this.context == 'switching') {

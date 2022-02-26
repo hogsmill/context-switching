@@ -51,7 +51,7 @@ export default {
     },
     setContext() {
       if (this.controller && !this.running) {
-        bus.$emit('sendSetContext', {gameName: this.gameName, context: this.game})
+        bus.emit('sendSetContext', {gameName: this.gameName, context: this.game})
       }
     }
   }

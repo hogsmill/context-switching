@@ -21,7 +21,7 @@ export default {
     makeMeController() {
       const id = uuidv4()
       this.$store.dispatch('makeMeController', id)
-      bus.$emit('sendMakeMeController', {gameName: this.gameName, id: id})
+      bus.emit('sendMakeMeController', {gameName: this.gameName, id: id})
     }
   }
 }

@@ -28,6 +28,7 @@
         </div>
       </div>
     </div>
+    <Modals />
   </div>
 </template>
 
@@ -41,6 +42,7 @@ import params from './lib/params.js'
 import appTypeFuns from './lib/appType.js'
 
 import Header from './components/Header.vue'
+import Modals from './components/Modals.vue'
 import ClearStorage from './components/ClearStorage.vue'
 import AboutView from './components/about/AboutView.vue'
 import WalkThroughView from './components/about/WalkThroughView.vue'
@@ -55,6 +57,7 @@ export default {
   name: 'App',
   components: {
     appHeader: Header,
+    Modals,
     ClearStorage,
     AboutView,
     WalkThroughView,
@@ -94,7 +97,7 @@ export default {
     }
   },
   created() {
-    bus.$on('connectionError', (data) => {
+    bus.on('connectionError', (data) => {
       this.$store.dispatch('updateConnectionError', data)
     })
 
@@ -110,13 +113,13 @@ export default {
       this.$store.dispatch('updateGameName', params.getParam('game'))
     }
 
-    bus.$on('setContext', (data) => {
+    bus.on('setContext', (data) => {
       if (data.gameName == this.gameName) {
         this.$store.dispatch('updateContext', data)
       }
     })
 
-    bus.$on('makeMeController', (data) => {
+    bus.on('makeMeController', (data) => {
       if (data.gameName == this.gameName && this.controller != data.id) {
         this.$store.dispatch('makeMeController', '')
       }
@@ -135,7 +138,7 @@ export default {
       this.hide()
     },
     setContext(context) {
-      bus.$emit('sendSetContext', {gameName: this.gameName, context: context})
+      bus.emit('sendSetContext', {gameName: this.gameName, context: context})
     },
     restart() {
       console.log('restarting')

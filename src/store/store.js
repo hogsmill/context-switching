@@ -1,18 +1,21 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 
-Vue.use(Vuex)
+import { createStore } from 'vuex'
 
 function getContext(state, context) {
   return context == 'switching' ? state.switching : state.noSwitching
 }
 
-export const store = new Vuex.Store({
+export const store = createStore({
   state: {
     thisGame: 'Context Switching',
     appType: 'Context Switching',
     connectionError: null,
     localStorageStatus: true,
+    modals: {
+      'feedback': false,
+      'walkThrough': false,
+      'setGame': false
+    },
     showAbout: false,
     walkThrough: false,
     host: false,
@@ -55,6 +58,9 @@ export const store = new Vuex.Store({
     },
     getConnectionError: (state) => {
       return state.connectionError
+    },
+    getModals: (state) => {
+      return state.modals
     },
     getShowAbout: (state) => {
       return state.showAbout
@@ -124,6 +130,16 @@ export const store = new Vuex.Store({
     updateConnectionError: (state, payload) => {
       state.connectionError = payload
     },
+    showModal: (state, payload) => {
+      const modals = Object.keys(state.modals)
+      for (let i = 0; i < modals.length; i++) {
+        state.modals[modals[i]] = false
+      }
+      state.modals[payload] = true
+    },
+    hideModal: (state, payload) => {
+      state.modals[payload] = false
+    },
     updateShowAbout: (state, payload) => {
       state.showAbout = payload
     },
@@ -183,6 +199,12 @@ export const store = new Vuex.Store({
     },
     updateConnectionError: ({ commit }, payload) => {
       commit('updateConnectionError', payload)
+    },
+    showModal: ({ commit }, payload) => {
+      commit('showModal', payload)
+    },
+    hideModal: ({ commit }, payload) => {
+      commit('hideModal', payload)
     },
     updateShowAbout: ({ commit }, payload) => {
       commit('updateShowAbout', payload)
