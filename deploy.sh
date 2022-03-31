@@ -33,7 +33,7 @@ ROUTES=(
   'richemont','Richemont','Context Switching'
   'bud','Bud','Context Switching'
   'mattphillip','MattPhillip','Context Switching'
-  '','','Requirements Game'
+  'requirements-game','RequirementsGame','Requirements Game'
 )
 
 for ((i = 0; i < ${#ROUTES[@]}; i++))
